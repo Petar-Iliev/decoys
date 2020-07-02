@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
+import {Link} from 'react-router-dom'
+import Cookies from 'js-cookie'
 import Tilt from 'react-parallax-tilt';
 import clip from '../main/svgs/clapperboard(1).svg'
-import {Link} from 'react-router-dom'
 import {CSSTransition} from 'react-transition-group'
 
 import {ReactComponent as Play} from './orgmp/play.svg'
 import {ReactComponent as Pause} from './orgmp/pause.svg'
 import {ReactComponent as Close} from './orgmp/close-button.svg'
+import {ReactComponent as BlackHeart} from './orgmp/healthy.svg';
+import {ReactComponent as RedHeart} from './orgmp/healthy(1).svg';
 
 
 
@@ -18,8 +21,9 @@ function Orgasm(props){
     const [play,setPlay] =useState(false);
     const [isIn,setIn] =useState(false);
     const [videoUrl,setVideoUrl]=useState(props.videoUrl);
-      const videoRef=useRef();
-      
+    const [favorite,setFavorite]=useState(props.favorite);
+    const videoRef=useRef();
+    const cardRef=useRef();  
 
     
 
@@ -35,24 +39,27 @@ function Orgasm(props){
     }
 
    async function handleVideo(){
-
-        // if(!this.videoRef.current.playing){
-        // await this.videoRef.current.play();
-        //     this.videoRef.current.playing=true;
-        // }else{
-        //    await this.videoRef.current.pause();
-        //     this.videoRef.current.playing=false;
-        // }
-
-        setIn(!isIn);
-       
+        setIn(!isIn);  
+     
+        
     }
  
 
-    // useEffect(()=>{
+    function favoriteVideo(){
 
+        setFavorite(!favorite);
+        const token=Cookies.get("token");
+        const orgasm=props.title;
+        fetch("http://localhost:8050/orgasm/update/favorite",{
+            method:'POST',
+            headers:{
+                "Authorization":token,
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({title:orgasm})
+        })
 
-    // },[])
+    }
  
 
         return(
@@ -62,14 +69,15 @@ function Orgasm(props){
             glareEnable={true}
             glareMaxOpacity={0.8}
             scale={1}
-            glarePosition={"all"}>   
+            glarePosition={"all"}
+           >   
  
 
-         <div className="imgBx">
+         <div className="imgBx" >
 
       <img src={props.img} ></img>
          </div>
-       <div className="contentBx">
+       <div className="contentBx"  >
         <h2>{props.title}</h2>
         <p>{props.content}</p>
         <Link to="#" onClick={handleVideo}><img src={clip} className="clapper"/>
@@ -94,6 +102,9 @@ function Orgasm(props){
                 </div>
                 <div className="close-video">
                      <Close onClick={handleVideo}/>
+                </div>
+                <div className="favorite-video" onClick={favoriteVideo}>
+                   {favorite ? <RedHeart/> : <BlackHeart/>}
                 </div>
                 
                  </div>

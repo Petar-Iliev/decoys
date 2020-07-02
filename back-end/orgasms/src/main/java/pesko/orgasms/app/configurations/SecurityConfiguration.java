@@ -54,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtUsernameAndPasswordAutchenticationFilter(authenticationManager(), jwtConfiguration,jwtService))
                 .addFilterAfter(new JwtTokenVerifier(jwtConfiguration,jwtService),JwtUsernameAndPasswordAutchenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/register/**","/charge/**","/login","/orgasm/**").permitAll()
+                .antMatchers("/register/**","/charge/**","/login","/orgasm/**","/mail/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/profile","/logoff").hasRole("USER")
                 .anyRequest()
@@ -81,7 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://decoys.herokuapp.com"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.addAllowedHeader("Authorization");
         configuration.addAllowedHeader("Content-Type");

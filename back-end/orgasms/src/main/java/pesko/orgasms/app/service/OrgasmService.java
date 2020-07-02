@@ -12,4 +12,10 @@ public interface OrgasmService {
 
     List<OrgasmServiceModel> findAll();
 
+    boolean modifyFavorite(OrgasmServiceModel orgasmServiceModel,String username);
+
+    OrgasmServiceModel findByTitle(String title);
+
+    void deleteOrgasm(String title);
+
 }

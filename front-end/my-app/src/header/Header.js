@@ -27,7 +27,7 @@ const Header =()=>{
   const logged=useSelector(state=>state.log)
   const dispatcher=useDispatch();
   
-    console.log(logged);
+
 
     
  
@@ -64,14 +64,32 @@ const Header =()=>{
          <Link href={window.location.pathname} className="icon-button" onClick={()=>setOpen(!open)}>
       {props.icon}
       </Link>
-      <CSSTransition in={open} timeout={500} unmountOnExit classNames="my-node"><DropdownMenu/></CSSTransition> 
+      <CSSTransition in={open} timeout={500} unmountOnExit classNames="my-node">
+        {/* <DropdownMenu/> */}
+        <div className="drop-down">
+           <Link to="/orgasms" className="prof-cont" onClick={()=>setOpen(!open)}>
+            <span className="drop-title">Your Orgasms</span>
+          {<Panties className="prof-svg"/>}
+            </Link>
+            <Link to="/contact" className="prof-cont" onClick={()=>setOpen(!open)}>
+            <span className="drop-title">Contact us</span>
+          {<Smartphone className="prof-svg"/>}
+            </Link>
+              <Link to="/donate" className="prof-cont" onClick={()=>setOpen(!open)}>
+        <span className="drop-title">Donate</span>
+        {<PiggyBank className="prof-svg"/>}
+            </Link>
+      
+          
+        </div>
+        </CSSTransition> 
         </li>
 
 
       );
     }
 
-    function DropdownMenu(){
+    function DropdownMenu(props){
 
       return(
       

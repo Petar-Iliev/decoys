@@ -4,18 +4,16 @@ package pesko.orgasms.service;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import pesko.orgasms.app.domain.entities.Orgasm;
 import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.exceptions.FakeOrgasmException;
 import pesko.orgasms.app.repository.OrgasmRepository;
+import pesko.orgasms.app.repository.UserRepository;
 import pesko.orgasms.app.service.OrgasmServiceImpl;
 import pesko.orgasms.app.utils.ValidatorUtil;
 import pesko.orgasms.app.utils.ValidatorUtilImpl;
@@ -32,6 +30,7 @@ import static org.mockito.Mockito.when;
 public class OrgasmServiceTest {
 
     OrgasmRepository orgasmRepository;
+    UserRepository userRepository;
     List<Orgasm> orgasmsList;
     ModelMapper modelMapper;
     ValidatorUtil validatorUtil;
@@ -43,9 +42,11 @@ public class OrgasmServiceTest {
         validatorUtil = new ValidatorUtilImpl();
         orgasmsList = new ArrayList<>();
         orgasmRepository = Mockito.mock(OrgasmRepository.class);
+
         when(orgasmRepository.findAll()).thenReturn(orgasmsList);
 
-        orgasmService = new OrgasmServiceImpl(orgasmRepository, modelMapper, validatorUtil);
+        //TODO userRepository
+        orgasmService = new OrgasmServiceImpl(orgasmRepository, modelMapper, validatorUtil,userRepository);
 
     }
 

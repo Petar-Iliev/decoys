@@ -35,6 +35,7 @@ public class UserController {
     @PostMapping(value = "/register", produces = "application/json")
     public UserBindingModel register(@Valid @RequestBody UserBindingModel userBindingModel, BindingResult bindingResult) {
 
+
         if(bindingResult.hasErrors() || !userBindingModel.getPassword().equals(userBindingModel.getRepeatPassword())){
             throw new InvalidUserException("Hacker Attack Detected Calling FBI");
         }

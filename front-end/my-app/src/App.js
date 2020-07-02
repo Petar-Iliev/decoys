@@ -20,7 +20,7 @@ import Register from './register/Register'
 import NotFound from './staticPages/NotFound'
 import Stripe from './stripe/Stripe'
 import Admin from './admin/Admin'
-
+import Contact from './Contact';
 import About from './about/About';
 
 
@@ -44,6 +44,7 @@ const App = ()=> {
         <Route path="/admin" component={Admin}/>
         <Route path="/philosophy" component={Philosophy}/>
         <Route path="/about" component={About}/>
+        <Route path="/contact" component={Contact}/>
      
         <Route component={NotFound}/>
       </Switch>

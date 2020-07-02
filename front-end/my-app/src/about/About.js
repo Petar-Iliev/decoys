@@ -10,9 +10,11 @@ const About = () =>{
                 <p>NO!</p><p> We are not some door to door dildo sellers.<br/>
              We are small team based in Bulgaria dedicated to the cause.<br/>
              We've spent last 10 years studing orgasm.<br/>
+             Found voice actors which have experienced orgasms on their own.<br/>
 Hired biggest orgasmologist on the planet Dr. P.I.I.<br/>
+
 <img src={img} className="pesho-pic"/> <br/>
-Found voice actors which have experienced orgasms on their own.<br/>
+
  </p>
 
  <h2>The Studio</h2>

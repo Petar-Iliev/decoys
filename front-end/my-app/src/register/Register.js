@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import {Link}  from "react-router-dom"
-
+import Loader from '../Loader';
 import styles from '../register/register.css';
 import {useSelector,useDispatch} from 'react-redux';
 import {log} from '../actions/index.js'
@@ -19,6 +19,7 @@ function Register(props){
     const [usernameError,setUsernameError]=useState("");
     const [passwordError,setPasswordError]=useState("");
     const [repeatPasswordError,setRepeatPasswordError]=useState("");
+    const [loader,setLoader] =useState(false);
     
     const logged=useSelector(state=>state.log);
 
@@ -38,6 +39,7 @@ function Register(props){
    function handleSubmit(e){
          e.preventDefault();
 
+         setLoader(true);
          
     
          if(usernameError.length>0 || passwordError.length>0 || repeatPasswordError.length>0 
@@ -67,7 +69,7 @@ function Register(props){
                 }
             })
             .then(resp=>{
-              
+              debugger
                 props.history.push("/login")
             }).catch(err=>{
                 console.log(err);
@@ -76,6 +78,7 @@ function Register(props){
        
        }
 
+       setLoader(false);
     }
 
     function handleUsername(e){
@@ -171,6 +174,9 @@ function Register(props){
 
          </div>
            </div>
+
+            {loader && <Loader/>}
+           
            </>
         );
     

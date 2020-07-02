@@ -21,7 +21,6 @@ import {useSelector} from 'react-redux'
     
     useEffect(()=>{
         
-        console.log("call Me");
         if(!logged){
             props.history.push("/register")
         }else{
@@ -37,9 +36,9 @@ import {useSelector} from 'react-redux'
           resp.json()
         )
         .then(resp=>{
-          
+       
            const renderItems= resp.map(e=>{
-                return <Orgasm title={e.title} content={e.content} img={e.imgUrl} videoUrl={e.videoUrl} key={e.title} in={false}></Orgasm>
+                return <Orgasm title={e.title} content={e.content} img={e.imgUrl} videoUrl={e.videoUrl} favorite={e.favorite} key={e.title} in={false}></Orgasm>
            });
            setList(renderItems)
            
@@ -66,7 +65,7 @@ return(
                      {error}
                  </div>
             </div>
-         
+                 
         </>
         );
     

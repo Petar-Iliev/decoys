@@ -16,18 +16,14 @@ public class OrgasmServiceModel {
     @NotNull
     @NotBlank
     private String title;
-
     private String content;
-
     @NotNull
     @NotBlank
     private String imgUrl;
-
-
     @NotNull
     @NotBlank
     private String videoUrl;
-
+    private List<UserServiceModel> users;
 
 
 }
