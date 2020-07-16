@@ -1,10 +1,11 @@
 import React, { createRef } from 'react'
 import Terminal from './Terminal'
+import Desktop from './Desktop';
 
 import admin from './admin.css'
 import Cookies from 'js-cookie'
 
-import {CSSTransition, SwitchTransition, TransitionGroup} from 'react-transition-group'
+import {CSSTransition} from 'react-transition-group'
 
 import {ReactComponent as TerminalSVG} from '../main/svgs/command-line.svg';
 import {ReactComponent as DesktopSVG} from '../main/svgs/desktop.svg';
@@ -18,18 +19,23 @@ class Admin extends React.Component{
             valid:false,
             title:"",
             content:"",
-            img:"",
             video:"",
-            imgUrl:"",
             videoUrl:"",
             uploadUrl:"",
             userPanel:false,
-            orgasmPanel:false,
             terminal:false,
             desktop:false,
-            option:true
+            option:true,
+            listOrg:[],
+            listRole:[],
+            username:"",
+            userid:"",
+            orgasm:{title:"",videoUrl:"",pending:""},
+            validUsr:false
             
         }
+   
+    
 
          this.imgRef=createRef();
          this.videoRef=createRef();
@@ -40,19 +46,21 @@ class Admin extends React.Component{
         this.handleName=this.handleName.bind(this);
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleVideo=this.handleVideo.bind(this);
-        this.handleImg=this.handleImg.bind(this);
+        this.handleOrgasmTitle=this.handleOrgasmTitle.bind(this);
+        this.handleOrgasmFile=this.handleOrgasmFile.bind(this);       
 
         this.handleDesktop=this.handleDesktop.bind(this);
         this.handleTerminal=this.handleTerminal.bind(this);
 
-        this.uploadImg=this.uploadImg.bind(this);
+      
         this.uploadVideo=this.uploadVideo.bind(this);
 
 
-        this.findTypeByName=this.findTypeByName.bind(this);
+        this.findUser=this.findUser.bind(this);
         this.setUserRole=this.setUserRole.bind(this);
         this.deleteType=this.deleteType.bind(this);
-        this.help=this.help.bind(this);
+    
+        this.setPending=this.setPending.bind(this);
         this.addOrgasm=this.addOrgasm.bind(this);
     }
 
@@ -109,36 +117,9 @@ class Admin extends React.Component{
  
     }
 
-    async uploadImg(){
-       
-        const files=this.state.img;
-        const data=new FormData();
-        data.append("file",files[0]);
-        data.append("upload_preset","pesho_api")
-     
-
-        const res=await fetch(this.state.uploadUrl+"image/upload",{
-            method:"POST",
-            body:data
-        }).catch(e=>{
-            console.log(e);
-        })
-
-        const file= await res.json();
-
-        this.setState({
-            imgUrl:file.secure_url
-        })
-
-    }
-
-    handleImg(e){
-        console.log(e.target.files);
-        this.setState({
-            img:e.target.files
-        })
-    }
+   
     handleVideo(e){
+        
         this.setState({
             video:e.target.files
         })
@@ -157,38 +138,37 @@ class Admin extends React.Component{
 
 
    async handleSubmit(e){
-       if(e.preventDefault){
-        e.preventDefault();
-       }else{
-           if(this.state.title==="" || this.state.video==="" || this.state.img){
-               return "Invalid command: type help for list of valid commands"
-           }
-       }
       
+ 
     
-        await this.uploadImg();
+
+           if(this.state.title==="" || this.state.video===""){
+               return "Invalid Props"
+           }
+
+        const videoType=this.state.video[0].type;
+       
+           if(videoType!=="audio/mpeg" && videoType!=="video/mp4"){
+                  return "Invalid MIME TYPE";
+           }
+         
         await this.uploadVideo();
-
-
         const data={
             "title":this.state.title,
             "content":this.state.content,
-            "imgUrl":this.state.imgUrl,
             "videoUrl":this.state.videoUrl
-
         }
 
-var raw = JSON.stringify(data);
+let raw = JSON.stringify(data);
     const token=Cookies.get("token");
-var requestOptions = {
+
+let requestOptions = {
   method: 'POST',
   headers: {
       'Authorization':token,
       "Content-Type":"application/json",
-  
   },
   body: raw,
-  
 };
 
 await fetch("http://localhost:8050/orgasm/create", requestOptions)
@@ -208,16 +188,9 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
         this.setState({desktop:true,option:false})
     }
 
-   async findTypeByName(e){
-
-        const input=e.split(" ");
-        if(input.length!==3 || input[1]!=='orgasm' && input[1]!=='user'){
-            return "Invalid Command";
-        }
-        const type=input[1];
-        const name=input[2];
-      
-        const result= await fetch(`http://localhost:8050/admin/find/${type}/${name}`,{
+   async findUser(name){
+       
+        const result= await fetch(`http://localhost:8050/admin/find/user/${name}`,{
             method:"GET",
             headers:{
                 "Authorization":Cookies.get("token")
@@ -225,37 +198,29 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
         })
         .then(resp=>resp.json())
         .then(data=>{
+           if(!data.ex){
+                this.setState({listRole:data.authorities,listOrg:data.orgasms,username:data.username,validUsr:true})     
+           }else{
+            this.setState({listRole:[],listOrg:[],username:"",validUsr:false})
+           }
             return data;
         })
         .catch(err=>{
-            console.log(err);
+            console.error(err);
         })
-        let res;
-        if(type==='user'){
-        if(!result.id){
-          res="User doesn't exist";
-        }else{
-        res=`id: ${result.id} \n username: ${result.username} \n roles: ${result.authorities.join(",")}`;
-        }
-    }else{
-        if(!result.title){
-            res="Orgasm doesn't exist";
-        }else{
-            res=`id: ${result.id} \ntitle: ${result.title}\n videoUrl: ${result.videoUrl}\n img: ${result.imgUrl}`;
-        }
-    }
-        return res;
+
+
+        return result;
        
     }
 
-    async setUserRole(e){
-         const validRoles=["ADMIN","GUEST","USER"]
-         const input=e.split(" ");
-         const username=input[1];
-         const role=input[2];
-         if(input.length!==3 || !validRoles.includes(role)){
-             return "Invalid command: type help for list of valid commands";
-         }
+  
+
+    async setUserRole(username,role){
+         const validRoles=["ADMIN","GUEST","USER"] ;
+        if(!validRoles.includes(role)){
+            return "INVALID ROLE";
+        }
 
        const res= await fetch("http://localhost:8050/admin/set-role",{
              method:"PUT",
@@ -264,29 +229,25 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
                  "Content-Type":"application/json"
              },
              body:JSON.stringify({username,role})
-         }).then(resp=>{
-             if(resp.status>399){
-                 return "Invalid User"
-             }else{
-                 return `${username} modified`
-             }
-         }).catch(err=>{
+         }).then(resp=>resp.json())
+         .then(data=>{
+            
+           
+            if(data.ex){
+            return "Invalid User"
+            }
+            this.setState({listRole:data.authorities})
+        })
+         .catch(err=>{
              console.log(err);
          })
 
          return res;
     }
 
-    async deleteType(e){
+    async deleteType(type,name){
         
-        const input=e.split(" ");
-     
-        if(input.length!==2){
-            return "Invalid command: type help for list of valid commands";
-        }
-        const type=input[0] ==="Duser" ? "user" : "orgasm";
-
-     const res=await fetch(`http://localhost:8050/admin/delete/${type}?name=${input[1]}`,{
+     const res=await fetch(`http://localhost:8050/admin/delete/${type}?name=${name}`,{
             method:"DELETE",
             headers:{
                 "Authorization":Cookies.get("token")
@@ -296,6 +257,12 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
             if(resp.status>399){
                 return `Invalid ${type}`;
             }
+            if(type==="orgasm"){
+                let tempLOrg=this.state.listOrg.filter(e=>e.title!==name);
+                this.setState({listOrg:tempLOrg})
+            }else{
+               this.setState({listOrg:[],listRole:[],username:"",userid:""})
+            }      
             return `Successfully deleted ${type}`
         })
         .catch(err=>{
@@ -305,41 +272,76 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
         return res;
     }
 
-    async addOrgasm(e){
-        const input=e.split(" ");
-        if(input.length<2){
-            return "Invalid command: type help for list of valid commands";
-        }
+    async handleVideo(){
+        this.setState({video:this.videoRef.current.files})
+    }
 
-    
+    async handleOrgasmTitle(title){
+        this.setState({title:title});
+         return "";
+    }
+    async handleOrgasmFile(){
+        await this.videoRef.current.click();
 
-      const titlee=input[1];
-      const contentt=input[2];
-       await this.imgRef.current.click();
+        return "";
+    }
+    async addOrgasm(titlee){
+     
+     
        await this.videoRef.current.click();
-    
+  
+       console.log(this.videoRef.current.files);
 
-      
-
-        this.setState({title:titlee,content:contentt});
-     return "k"
+        this.setState({title:titlee});
+     return "Loading..."
     }
 
-    help(e){
-        console.log(this.state.pic);
-        return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [username] [role {ADMIN,GUEST,USER}]\n
-        \n submit [title] [content {OPTIONAL}\n\n  (Choose File IMG) (Choose File VIDEO)\n\n create Orgasm AFTER ALL PROPS ARE FILLED\n\n`
+    async setPending(title){
+
+      const res= await  fetch(`http://localhost:8050/admin/modi/pending?title=${title}`,{
+            method:"PUT",
+            headers:{
+                "Authorization":Cookies.get("token")
+            }
+        })
+        .then(e=>e.json())
+        .then(data=>{
+          
+        if(data.error){
+            return "Invalid Orgasm";
+        }
+            let orgs=[...this.state.listOrg];
+            let inx=this.state.listOrg.map(function(e){
+                return e.title;
+            }).indexOf(title);
+
+            let org=orgs[inx];
+            org.pending= data.pending;
+            orgs[inx]=org;   
+            this.setState({listOrg:orgs});
+         
+            return "Modified"
+        })
+        .catch(err=>{
+            console.error(err);
+        })
+
+        return res;
     }
+
+  
     render(){
 
         const allowedMethos={
-         find:this.findTypeByName,
+         find:this.findUser,
          setRole:this.setUserRole,
-         Duser:this.deleteType,
-         Dorgasm:this.deleteType,
-         help:this.help,
+         delete:this.deleteType,
          addOrgasm:this.addOrgasm,
-         submit:this.handleSubmit
+         submit:this.handleSubmit,
+         setOrgasmTitle:this.handleOrgasmTitle,
+         setOrgasmFile:this.handleOrgasmFile,
+         setPending:this.setPending,
+         handleVideo:this.handleVideo
         }
         return(
            this.state.valid && 
@@ -358,12 +360,17 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
                
              </div>
 
+           
+           
+             <input type="file" name="file"  placeholder="Upload Video" className="fileUp" ref={this.videoRef}  onChange={this.handleVideo}/>
+             <CSSTransition timeout={2000} in={this.state.desktop} classNames="desktop-ani" key="d" mountOnEnter={true} >
+                 <Desktop methods={allowedMethos} orgasm={this.state.orgasm} validUsr={this.state.validUsr} orgasms={this.state.listOrg} roles={this.state.listRole} username={this.state.username}/>
+             </CSSTransition>
+
              <CSSTransition timeout={3000} in={this.state.terminal} classNames="terminal-ani" key="h" mountOnEnter={true} >
                  <Terminal methods={allowedMethos} validCommands={['help','clear','Duser','Dorgasm','find','setRole','addOrgasm',"submit"]}/>
              </CSSTransition>
 
-             <input type="file" name="file" placeholder="Upload Img" className="fileUp" ref={this.imgRef} onChange={this.handleImg}/>
-             <input type="file" name="file"  placeholder="Upload Video" className="fileUp" ref={this.videoRef}  onChange={this.handleVideo}/>
            </div>
            </>
         )
@@ -375,24 +382,8 @@ export default Admin;
 
 
 
-// <form onSubmit={this.handleSubmit} className="admin-form">
-//                <label>
-//           Name:
-//           <input type="text" value={this.state.title} onChange={this.handleName} />
-//           </label>
-//                 Content
-//                 <input value={this.state.content}  onChange={this.handleContent}/>
-                
-//                 <label>IMG</label>
-//                      <input type="file" name="file" placeholder="Upload Img"  onChange={this.handleImg}/>
-//                      <label>Video</label>
-//                      <input type="file" name="video-file" placeholder="Upload Video"  onChange={this.handleVideo}/>
-                   
-//                      <img src={this.state.imgUrl}/>
-                   
-//                 <video src={this.state.videoUrl}/>
-//                 <button type="submit">Submit</button>
-   
-//             </form>
+
+
+
 
 

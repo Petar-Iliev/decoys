@@ -1,68 +1,111 @@
 import React, { useState } from 'react';
-import {CSSTransition, SwitchTransition, TransitionGroup} from 'react-transition-group'
 
 
 
-function CommandLine(params){
 
-    return(
-    <div className="command-line">{params.line}</div>
-    )
-}
+
 
 
 function  Terminal(props) {
     
     const [command,setCommand]=useState("");
-    const [board,setBoard] =useState(["Terminal V1 - for help type help"])
     const [lines,setLines]=useState([]);
-    const listOfCommands=['help','clear','D-user','D-orgasm','f-user','f-orgasm','set-role','add-orgasm']
+ 
   
 
-    function executeCommand(e){
-
-        
-
+  function help(){
+       
+        return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [username] [role {ADMIN,GUEST,USER}]\n
+        \n addOrgasm [title] [content {OPTIONAL}\n\n  (Choose File VIDEO)\n\n submit - creates Orgasm AFTER ALL PROPS ARE FILLED\n\n `
     }
     
 
  async function executeLine(e){
       if(e.keyCode===13){
 
-       
         const trimmedCommand=command.trim();
-        if(trimmedCommand=="clear"){
-            
+
+        if(trimmedCommand==="clear"){
             setLines([]);
-            
         }else{
-            
-        let retMsg="Invalid command: type help for list of valid commands";
-        const cmd=trimmedCommand.split(" ")[0];
-    
+        
+        const input = trimmedCommand.split(" ");
+        const cmd=input[0];
      
-       const exist=props.validCommands.find(e=>e===cmd);
-  
-       if(exist){
-          
-        retMsg=await props.methods[cmd](trimmedCommand);
-       }
-      await  setLines([...lines,{
+        let name;
+       let retMsg="Invalid command type help for more info";
+        switch(cmd){
+            case "find":
+             name=trimmedCommand.slice(5);
+             let data = await props.methods.find(name);
+             if(!data.id){
+                retMsg=`${name} doesn't exists`
+             }else{    
+                 retMsg=`ID: ${data.id}\nUsername: ${data.username}\nRoles: ${data.authorities.join(", ")}\nOrgasms:\n`
+                 data.orgasms.forEach(e=>{ retMsg+= `ID: ${e.id}\n Title: ${e.title}\n Pending: ${e.pending}\n${e.videoUrl}\n`})
+             }  
+            break;
+
+            case "Duser":
+                  name=trimmedCommand.slice(6);
+                 retMsg=await props.methods.delete("user",name);
+                break;
+            case "Dorgasm":
+                name=trimmedCommand.slice(8);
+                retMsg=await props.methods.delete("orgasm",name);
+                break;
+            case "setRole":
+                    let role= input[1];
+                    let pos= trimmedCommand.indexOf(role);
+                    name=trimmedCommand.slice(pos+role.length+1);
+                    retMsg=await props.methods.setRole(name,role);
+                break;
+            case "setPending":
+                  name=trimmedCommand.replace(cmd+" ","");
+                retMsg= await props.methods.setPending(name);
+               
+                
+            break;
+            case "setOrgasmTitle":
+            
+                    let title = input[1];
+                   
+                    retMsg=await props.methods.setOrgasmTitle(title);
+                   
+               break;
+
+               case "setOrgasmFile":
+                   retMsg=await props.methods.setOrgasmFile();
+               break;
+
+            case "submit":
+                     retMsg=await props.methods.submit();
+               break;
+
+            case "help":         
+            retMsg= help();            
+                break;
+                
+        }
+
+      
+        setLines([...lines,{
             id:lines.length,
             value:retMsg,
             
         }])
+
+     
     }
-
-        setCommand("");
-
+    setCommand("");
       }
+   
   }
   
     return(
       
         <pre className="pre-terminal">
-        {/* <textarea className="the-terminal" ><p>Hello</p></textarea> */}
+       
         <p className="terminal-intro">Terminal V1 </p>
     {lines.map(e=>(<div key={e.id} className="command-line"> {e.value} </div>))}
        <div className="current-command-line">Admin:<textarea rows={1} cols={1} onChange={(e)=>setCommand(e.target.value)} onKeyDown={executeLine} value={command}></textarea></div> 

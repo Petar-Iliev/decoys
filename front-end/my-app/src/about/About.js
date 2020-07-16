@@ -20,7 +20,7 @@ Hired biggest orgasmologist on the planet Dr. P.I.I.<br/>
  <h2>The Studio</h2>
  <p>This is where all the magic happens.<br/>
 We spent our free time searching for the next orgasm.<br/>
-Went to every single bar , disco ,fast food resturant,lightless street , church , shared taxi lifts just to find the next muse,
+Went to every single bar , disco ,fast food resturant,lightless street , church , shared taxi lifts just to find the next muse,<br/>
 just to deliver next wet slappy Orgasm.<br/>
 </p>
 <p>CONTACT US   +359877513153</p>

@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import pesko.orgasms.app.domain.entities.Role;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.repository.RoleRepository;
-import pesko.orgasms.app.service.RoleServiceImpl;
+import pesko.orgasms.app.service.impl.RoleServiceImpl;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

@@ -8,16 +8,14 @@ import lombok.Setter;
 @Setter
 public class OrgasmViewModel {
 
+    private Long id;
+
     private String title;
 
     private String content;
 
-
-    private String imgUrl;
-
     private String videoUrl;
 
-    private int likes;
+    private boolean pending;
 
-    private boolean favorite;
 }

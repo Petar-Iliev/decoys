@@ -1,3 +1,11 @@
+:root{
+    font-size: 16px;
+    font-family: 'DM Mono', monospace;
+    --text-primary: #b6b6b6;
+    --text-secondary: #ececec;
+    --bg-primary:#23232e;
+    --bg-secondary:#141418;
+}
 
 .admin-form{
     padding: 0;
@@ -9,4 +17,194 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+
+.side-nav-admin{
+    position: fixed;
+    top: 10%;
+    height: 100%;
+    width: 5rem;
+    background-color: var(--bg-primary);
+    transition:  width 600ms ease;
+    z-index: 100;
+}
+
+.side-ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.side-item{
+  width: 100%;
+}
+
+.admin-nav-link{
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    filter:grayscale(100%) opacity(0.7);
+    transition: all 200ms ease;
+}
+
+.admin-nav-link:hover{
+    filter: grayscale(0%) opacity(1);
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+.admin-nav-text{
+    display: none;
+    margin-left: 1rem;
+}
+
+.admin-side-svg{
+    width: 2rem !important;
+    margin: 0 1.5rem;
+    
+}
+.main-admin{
+    position: absolute;
+    top: 50px;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--bg-primary);
+}
+
+.side-nav-admin:hover{
+    width: 16rem;
+}
+.side-nav-admin:hover .admin-nav-text{
+    display: block;
+}
+
+.admin-search{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 10%;
+}
+.option-btn{
+    width: 200px;
+    margin: 20px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: white;
+    cursor: pointer;
+}
+.this-one{
+    background-color: #70798C;
+}
+.admin-search{
+    margin-top: 50px;
+}
+.info-admin{
+    position: absolute;
+    top: 34%;
+   
+}
+.role-color{
+    border: 5px solid black;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.green{
+    background-color: greenyellow;
+}
+.white{
+    background-color: white;
+    
+}
+
+.pre-orgasms{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;
+    align-items: center; */
+    margin: 0;
+
+    height: 400px;
+    color: white;
+
+    overflow: auto;
+}
+.pending{
+    border: 5px solid black;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.true{
+    background-color: #F7B32B;
+}
+
+.false{
+    background-color: #A9E5BB;
+}
+
+.desk-delete-org{
+    margin-left: 20px;
+    width: 100px;
+    cursor: pointer;
+    border: 5px solid black;
+    background-color: #F72C25;
+}
+
+
+.org-title-desk{
+    border: 5px solid black;
+    background-color: #364958;
+}
+
+.inf-desk-hold{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+
+}
+
+.optins-tye{
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.user-roles{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.option-nav-ad{
+    background-color: cornflowerblue;
+    border: 5px solid black;
+    cursor: pointer;
+    margin: 20px;
+}
+
+.create-orgasm-desk{
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+}
+
+.choose-file{
+    background-color: darkmagenta;
+    margin: 50px;
+    border:5px solid black;
+    cursor: pointer;
+}
+
+
+.desk-sub-org{
+    background-color: darkseagreen;
+    border: 5px solid black;
+    cursor: pointer;
 }

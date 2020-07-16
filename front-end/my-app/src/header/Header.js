@@ -67,7 +67,7 @@ const Header =()=>{
       <CSSTransition in={open} timeout={500} unmountOnExit classNames="my-node">
         {/* <DropdownMenu/> */}
         <div className="drop-down">
-           <Link to="/orgasms" className="prof-cont" onClick={()=>setOpen(!open)}>
+           <Link to="/user/orgasms" className="prof-cont" onClick={()=>setOpen(!open)}>
             <span className="drop-title">Your Orgasms</span>
           {<Panties className="prof-svg"/>}
             </Link>
@@ -79,7 +79,6 @@ const Header =()=>{
         <span className="drop-title">Donate</span>
         {<PiggyBank className="prof-svg"/>}
             </Link>
-      
           
         </div>
         </CSSTransition> 

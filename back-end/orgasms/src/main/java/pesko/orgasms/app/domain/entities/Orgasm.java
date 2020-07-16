@@ -4,32 +4,36 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.checkerframework.checker.units.qual.C;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table
 @Getter
 @Setter
-
 public class Orgasm extends BaseEntity{
 
     @Column(nullable = false,unique = true)
     private String title;
 
-    @Column
-    private String content;
-
-    @Column(unique = true ,name ="img_url")
-    private String imgUrl;
 
     @Column(unique = true,name = "video_url")
     private String videoUrl;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "orgasms",fetch = FetchType.EAGER)
-    private List<User> users;
+    @Column
+    private boolean pending;
+
+//    @ToString.Exclude
+//    @ManyToMany
+//    @JoinTable(name = "users_orgasms",joinColumns = @JoinColumn(name = "orgasm_id",referencedColumnName = "id"),
+//            inverseJoinColumns =@JoinColumn(name = "user_id" ,referencedColumnName = "id") )
+
+    @ManyToOne(targetEntity = User.class)
+    private User user;
+    @ElementCollection
+   private Map<String,Boolean>likeDislike = new HashMap<>();
 
 
 

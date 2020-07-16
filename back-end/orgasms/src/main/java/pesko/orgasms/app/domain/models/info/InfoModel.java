@@ -8,4 +8,11 @@ import lombok.Setter;
 public class InfoModel {
 
     private String msg;
+
+    public InfoModel(){
+
+    }
+    public InfoModel(String msg){
+        this.msg=msg;
+    }
 }

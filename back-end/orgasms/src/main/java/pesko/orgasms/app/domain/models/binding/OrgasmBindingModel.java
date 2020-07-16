@@ -17,14 +17,8 @@ public class OrgasmBindingModel {
 
     private String content;
 
-
-    @Length(min = 1)
-    private String imgUrl;
-
-
     @Length(min = 1)
     private String videoUrl;
-
 
 
 }

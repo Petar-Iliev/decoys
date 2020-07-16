@@ -6,37 +6,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
-import pesko.orgasms.app.domain.entities.Role;
-import pesko.orgasms.app.domain.entities.Roles;
 import pesko.orgasms.app.domain.entities.User;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
 import pesko.orgasms.app.exceptions.InvalidUserException;
 import pesko.orgasms.app.repository.UserRepository;
 import pesko.orgasms.app.service.RoleService;
-import pesko.orgasms.app.service.UserService;
-import pesko.orgasms.app.service.UserServiceImpl;
+import pesko.orgasms.app.service.impl.UserServiceImpl;
 import pesko.orgasms.app.utils.ValidatorUtil;
 import pesko.orgasms.app.utils.ValidatorUtilImpl;
 import pesko.orgasms.serviceUtils.RoleServiceUtil;
 import pesko.orgasms.serviceUtils.UserServiceUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest

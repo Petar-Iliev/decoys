@@ -49,13 +49,7 @@ function Contact(props){
 
     return(
        <div className="container-contact">
-           <div className="left-side-contact">
-
-<div className="contact-more">
-<Smartphone/> (+359) 877-513-153
- 
-</div>
-           </div>
+         
            <div className="contact-form-wrapper">
              
              <form className="contact-form">

@@ -63,7 +63,9 @@ function Register(props){
                 },
                 body:data
             }).then(resp=>{
+                console.log(resp);
                 if(resp.status>399){
+
                     setAlreadyExists("User already exists")
                     throw Error("invalid")
                 }

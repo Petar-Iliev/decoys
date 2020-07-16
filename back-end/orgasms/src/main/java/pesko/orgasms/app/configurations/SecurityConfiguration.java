@@ -18,7 +18,7 @@ import pesko.orgasms.app.configurations.jwt.JwtConfiguration;
 import pesko.orgasms.app.configurations.jwt.JwtTokenVerifier;
 import pesko.orgasms.app.configurations.jwt.JwtUsernameAndPasswordAutchenticationFilter;
 import pesko.orgasms.app.service.JwtService;
-import pesko.orgasms.app.service.UserServiceImpl;
+import pesko.orgasms.app.service.impl.UserServiceImpl;
 
 import java.util.Arrays;
 

@@ -14,6 +14,7 @@ import {
 import Header from './header/Header'
 import Philosophy from './staticPages/Philosophy'
 import Orgasm from './orgasms/OrgasmPage'
+import UserOrgasms from './orgasms/UserOrgasmPage'
 import Main from './main/Main'
 import Login from './login/Login'
 import Register from './register/Register'
@@ -22,6 +23,7 @@ import Stripe from './stripe/Stripe'
 import Admin from './admin/Admin'
 import Contact from './Contact';
 import About from './about/About';
+
 
 
 const App = ()=> {
@@ -45,6 +47,7 @@ const App = ()=> {
         <Route path="/philosophy" component={Philosophy}/>
         <Route path="/about" component={About}/>
         <Route path="/contact" component={Contact}/>
+        <Route path="/user/orgasms" component={UserOrgasms}/>
      
         <Route component={NotFound}/>
       </Switch>

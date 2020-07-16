@@ -31,9 +31,7 @@ public class User extends BaseEntity implements UserDetails {
     private List<Role> roles;
 
     @ToString.Exclude
-    @ManyToMany
-    @JoinTable(name = "users_orgasms",joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
-            inverseJoinColumns =@JoinColumn(name = "orgasm_id" ,referencedColumnName = "id") )
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
     private List<Orgasm> orgasms;
 
     public User(){

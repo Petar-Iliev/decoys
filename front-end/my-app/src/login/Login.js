@@ -37,6 +37,7 @@ function Login(props){
 
             localStorage.setItem("logged",true);
             localStorage.setItem("user",username)
+            
             Cookies.set("token",resp.headers.authorization);
            
                   dispatcher(log());

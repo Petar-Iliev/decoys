@@ -1,121 +1,55 @@
 import React, { useState, useRef, useEffect } from 'react'
-import {Link} from 'react-router-dom'
-import Cookies from 'js-cookie'
-import Tilt from 'react-parallax-tilt';
-import clip from '../main/svgs/clapperboard(1).svg'
-import {CSSTransition} from 'react-transition-group'
 
-import {ReactComponent as Play} from './orgmp/play.svg'
-import {ReactComponent as Pause} from './orgmp/pause.svg'
-import {ReactComponent as Close} from './orgmp/close-button.svg'
-import {ReactComponent as BlackHeart} from './orgmp/healthy.svg';
-import {ReactComponent as RedHeart} from './orgmp/healthy(1).svg';
+import {ReactComponent as Cassette} from '../main/svgs/cassette.svg';
+import {ReactComponent as Delete} from '../main/svgs/remove.svg';
+import {ReactComponent as Checked} from '../main/svgs/success(1).svg';
+import {ReactComponent as Unchecked} from '../main/svgs/success.svg';
+import Cookies from 'js-cookie'
+
 
 
 
 function Orgasm(props){
 
-    
-
-
-    const [play,setPlay] =useState(false);
-    const [isIn,setIn] =useState(false);
-    const [videoUrl,setVideoUrl]=useState(props.videoUrl);
-    const [favorite,setFavorite]=useState(props.favorite);
-    const videoRef=useRef();
-    const cardRef=useRef();  
-
-    
-
-    async function playVideo(){
-              if(!play){
-        await videoRef.current.play();
-            
-        }else{
-           await videoRef.current.pause();
-          
-        }
-        setPlay(!play);
+    const audioRef=useRef();
+   
+    function playPause(){     
+        !audioRef.current.paused ? audioRef.current.pause() : audioRef.current.play();
     }
 
-   async function handleVideo(){
-        setIn(!isIn);  
-     
-        
-    }
- 
-
-    function favoriteVideo(){
-
-        setFavorite(!favorite);
-        const token=Cookies.get("token");
-        const orgasm=props.title;
-        fetch("http://localhost:8050/orgasm/update/favorite",{
-            method:'POST',
+    function deleteOrgasm(title){
+        fetch(`http://localhost:8050/orgasm/delete/own/${title}`,{
+            method:"DELETE",
             headers:{
-                "Authorization":token,
-                "Content-Type":"application/json"
+                "Authorization":Cookies.get("token")
             },
-            body:JSON.stringify({title:orgasm})
-        })
-
+            
+        }).then(e=>{
+            // window.location.reload(false);
+        }).catch(err=>console.error(err))
     }
- 
 
         return(
-            <>
-            <Tilt className="box"
-            perspective={3000}
-            glareEnable={true}
-            glareMaxOpacity={0.8}
-            scale={1}
-            glarePosition={"all"}
-           >   
- 
-
-         <div className="imgBx" >
-
-      <img src={props.img} ></img>
-         </div>
-       <div className="contentBx"  >
-        <h2>{props.title}</h2>
-        <p>{props.content}</p>
-        <Link to="#" onClick={handleVideo}><img src={clip} className="clapper"/>
-        
-        {/* <audio src={this.state.videoUrl} ref={this.videoRef}/> */}
-        </Link>
-  </div>
- 
-  </Tilt>     
-
-         <CSSTransition in={isIn} timeout={500} unmountOnExit classNames="movie">
-             <div className="full-screen">
-
             
-             <div className="movie-wrapper">
-                 <div className="movie-content">
-                 <video src={videoUrl} ref={videoRef} className="org-video"/>
-                 <div className="video-nav">
-                
-                <div className="toggle-play"  onClick={playVideo}>
-                {play ? <Pause/> : <Play/>}
-                </div>
-                <div className="close-video">
-                     <Close onClick={handleVideo}/>
-                </div>
-                <div className="favorite-video" onClick={favoriteVideo}>
-                   {favorite ? <RedHeart/> : <BlackHeart/>}
-                </div>
-                
-                 </div>
-                 </div>
+           
+           <div className="org-info-line">
+               <span className="org-info-line-title">{props.title.length < 10 ? props.title : props.title.slice(0,7)+".." }</span>
+               <Cassette className="casset-on-off" onClick={playPause}/>
+               {props.pending!==undefined &&
+               <>
+               {props.pending ? <Unchecked title="pending" className="check-mark"/> : <Checked title="approved" className="check-mark"/>}
+                <Delete title="delete" className="delete-own" onClick={()=>deleteOrgasm(props.title)}/> </>
+              }
+                <audio ref={audioRef} src={props.videoUrl}></audio>
                
-             </div>
-             </div>
-         </CSSTransition>
-  </>
+                </div>  
+
+         
         )
     
 }
 
 export default Orgasm;
+
+
+

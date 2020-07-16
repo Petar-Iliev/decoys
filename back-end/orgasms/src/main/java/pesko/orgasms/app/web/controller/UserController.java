@@ -4,9 +4,11 @@ package pesko.orgasms.app.web.controller;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pesko.orgasms.app.domain.models.error.ErrorInfo;
+import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
 import pesko.orgasms.app.domain.models.binding.UserBindingModel;
 import pesko.orgasms.app.exceptions.InvalidUserException;
@@ -33,7 +35,7 @@ public class UserController {
 
 
     @PostMapping(value = "/register", produces = "application/json")
-    public UserBindingModel register(@Valid @RequestBody UserBindingModel userBindingModel, BindingResult bindingResult) {
+    public ResponseEntity<InfoModel> register(@Valid @RequestBody UserBindingModel userBindingModel, BindingResult bindingResult) {
 
 
         if(bindingResult.hasErrors() || !userBindingModel.getPassword().equals(userBindingModel.getRepeatPassword())){
@@ -45,7 +47,7 @@ public class UserController {
         UserServiceModel userServiceModel1 = this.modelMapper.map(userBindingModel, UserServiceModel.class);
          this.modelMapper.map(this.userService.registerUser(userServiceModel1), UserBindingModel.class);
 
-         return userBindingModel;
+         return ResponseEntity.status(204).body(new InfoModel("Created"));
     }
 
 
@@ -54,14 +56,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
     public ErrorInfo userError(HttpServletRequest request, InvalidUserException e) {
 
-        e.printStackTrace();
+//        e.printStackTrace();
         return new ErrorInfo(request.getRequestURI(), e);
     }
 
     @ExceptionHandler({UserAlreadyExistException.class})
     @ResponseStatus(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS)
     public ErrorInfo userAlreadyExists(HttpServletRequest request,UserAlreadyExistException e){
-        e.printStackTrace();
+//        e.printStackTrace();
         return new ErrorInfo(request.getRequestURI(),e);
     }
 }

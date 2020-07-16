@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({FakeOrgasmException.class})
     public ErrorInfo orgasmHandlerException(HttpServletRequest request, FakeOrgasmException ex) {
 
-        ex.printStackTrace();
+//        ex.printStackTrace();
         return new ErrorInfo(request.getRequestURI(), ex);
     }
 }

@@ -63,21 +63,21 @@ public class UserControllerTest {
        when(bindingResult.hasErrors()).thenReturn(true);
     }
 
-    @Test
-    public void register_whenCorrect_UserViewModel(){
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        UserBindingModel userViewModel=new UserBindingModel();
-        userViewModel.setUsername("valid_username");
-        userViewModel.setPassword("valid_password");
-        userViewModel.setRepeatPassword("valid_password");
-
-       UserBindingModel saved= userController.register(userViewModel,bindingResult);
-
-        Assert.assertEquals(saved.getUsername(),"valid_username");
-        Assert.assertEquals(saved.getPassword(),"valid_password");
-        Assert.assertEquals(saved.getRepeatPassword(),null);
-    }
+//    @Test
+//    public void register_whenCorrect_UserViewModel(){
+//
+//        when(bindingResult.hasErrors()).thenReturn(false);
+//        UserBindingModel userViewModel=new UserBindingModel();
+//        userViewModel.setUsername("valid_username");
+//        userViewModel.setPassword("valid_password");
+//        userViewModel.setRepeatPassword("valid_password");
+//
+//       UserBindingModel saved= userController.register(userViewModel,bindingResult);
+//
+//        Assert.assertEquals(saved.getUsername(),"valid_username");
+//        Assert.assertEquals(saved.getPassword(),"valid_password");
+//        Assert.assertEquals(saved.getRepeatPassword(),null);
+//    }
 
     @Test(expected = InvalidUserException.class)
     public void register_whenIncorectUsername_shouldThrowException(){

@@ -1,10 +1,11 @@
-package pesko.orgasms.app.service;
+package pesko.orgasms.app.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import pesko.orgasms.app.domain.models.service.EmailServiceModel;
+import pesko.orgasms.app.service.EmailService;
 
 @Component
 public class EmailServiceImpl implements EmailService {

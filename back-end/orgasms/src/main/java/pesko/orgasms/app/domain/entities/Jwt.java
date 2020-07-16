@@ -26,4 +26,5 @@ public class Jwt extends BaseEntity{
     private Date expiresOn;
 
 
+
 }

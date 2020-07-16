@@ -15,6 +15,7 @@ public class UserInfoResponseModel {
     private String username;
     private Long id;
     private List<String> authorities;
+    private List<OrgasmViewModel> orgasms;
 
     public UserInfoResponseModel(){
 

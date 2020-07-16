@@ -1,20 +1,25 @@
-package pesko.orgasms.app.service;
+package pesko.orgasms.app.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pesko.orgasms.app.domain.entities.Role;
 import pesko.orgasms.app.domain.entities.Roles;
 import pesko.orgasms.app.domain.entities.User;
+import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
 import pesko.orgasms.app.exceptions.InvalidUserException;
 import pesko.orgasms.app.exceptions.UserAlreadyExistException;
 import pesko.orgasms.app.global.GlobalStaticConsts;
 import pesko.orgasms.app.repository.UserRepository;
+import pesko.orgasms.app.service.RoleService;
+import pesko.orgasms.app.service.UserService;
 import pesko.orgasms.app.utils.ValidatorUtil;
 
 import java.util.ArrayList;
@@ -66,7 +71,9 @@ public class UserServiceImpl implements UserService {
 
 
         User user = this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+
         this.checkIfRoot(user);
+//        this.userRepository.deleteUserByIdCustom(user.getId());
         this.userRepository.deleteById(user.getId());
     }
 
@@ -97,10 +104,10 @@ public class UserServiceImpl implements UserService {
             }
         }
         user = this.modelMapper.map(userModel, User.class);
-        this.userRepository.saveAndFlush(user);
 
 
-        return userModel;
+
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceModel.class);
     }
 
 

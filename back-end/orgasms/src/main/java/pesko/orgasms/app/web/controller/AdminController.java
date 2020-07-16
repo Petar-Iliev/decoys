@@ -3,9 +3,11 @@ package pesko.orgasms.app.web.controller;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pesko.orgasms.app.domain.models.binding.UserSetRoleBindingModel;
 import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
@@ -18,6 +20,7 @@ import pesko.orgasms.app.exceptions.FakeOrgasmException;
 import pesko.orgasms.app.service.OrgasmService;
 import pesko.orgasms.app.service.UserService;
 
+import java.security.Principal;
 import java.util.stream.Collectors;
 
 @RestController
@@ -42,13 +45,12 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public AdminUrlViewModel areYouAdmin() {
 
-
         return new AdminUrlViewModel(url);
     }
 
     @GetMapping("/find/user/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserInfoResponseModel findUser(@PathVariable(name = "name") String name) {
+    public ResponseEntity<UserInfoResponseModel> findUser(@PathVariable(name = "name") String name) {
 
         UserServiceModel user = this.userService.findByUsername(name);
         if (user == null) {
@@ -58,44 +60,71 @@ public class AdminController {
         responseModel.setAuthorities(user.getRoles().stream().map(RoleServiceModel::getAuthority).collect(Collectors.toList()));
 
 
-        return responseModel;
+        return ResponseEntity.ok().body(responseModel);
     }
 
     @GetMapping("/find/orgasm/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public OrgasmViewModel findOrgasm(@PathVariable(name = "name") String name) {
+    public ResponseEntity<OrgasmViewModel> findOrgasm(@PathVariable(name = "name") String name) {
 
         OrgasmServiceModel orgasmServiceModel = this.orgasmService.findByTitle(name);
 
         if (orgasmServiceModel == null) {
             throw new FakeOrgasmException("Orgasm doesn't exist");
         }
-
-        return this.modelMapper.map(orgasmServiceModel, OrgasmViewModel.class);
+      OrgasmViewModel orgasm= this.modelMapper.map(orgasmServiceModel, OrgasmViewModel.class);
+        return ResponseEntity.ok().body(orgasm);
     }
 
     @PutMapping("/set-role")
     @PreAuthorize("hasRole('ADMIN')")
-    public InfoModel setRoleAuth(@RequestBody UserSetRoleBindingModel userSetRoleBindingModel) {
+    public ResponseEntity<UserInfoResponseModel> setRoleAuth(@RequestBody UserSetRoleBindingModel userSetRoleBindingModel) {
 
         if (userSetRoleBindingModel.getRole().equals("ROOT")) {
             throw new IllegalArgumentException("Inside Job");
         }
-        this.userService.modifyRole(userSetRoleBindingModel.getUsername(), userSetRoleBindingModel.getRole());
-        return new InfoModel();
+       UserServiceModel userServiceModel=
+               this.userService.modifyRole(userSetRoleBindingModel.getUsername(), userSetRoleBindingModel.getRole());
+
+        UserInfoResponseModel userInfoResponseModel=this.modelMapper.map(userServiceModel,UserInfoResponseModel.class);
+
+        userServiceModel.getRoles().forEach(e->{
+            userInfoResponseModel.getAuthorities().add(e.getAuthority());
+        });
+
+        return ResponseEntity.ok().body(userInfoResponseModel);
     }
 
     @DeleteMapping("/delete/user")
     @PreAuthorize("hasRole('ADMIN')")
-    public InfoModel deleteUser(@RequestParam(value = "name", required = true) String name) {
+    public ResponseEntity<InfoModel> deleteUser(@RequestParam(value = "name", required = true) String name) {
         this.userService.deleteUserByUsername(name);
-        return new InfoModel();
+        this.orgasmService.removeLikeDislikeByUsername(name);
+        return ResponseEntity.ok().body(new InfoModel("deleted"));
     }
 
     @DeleteMapping("/delete/orgasm")
     @PreAuthorize("hasRole('ADMIN')")
-    public InfoModel deleteOrgasm(@RequestParam(value = "name", required = true) String name) {
+    public ResponseEntity<InfoModel> deleteOrgasm(@RequestParam(value = "name", required = true) String name) {
         this.orgasmService.deleteOrgasm(name);
-        return new InfoModel();
+        return ResponseEntity.ok().body(new InfoModel("deleted"));
     }
+
+    @PutMapping("/modi/pending")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<OrgasmViewModel> modifyOrgasm(@RequestParam(value = "title",required = true) String title){
+
+          OrgasmViewModel model=this.modelMapper.map(this.orgasmService.modifyPending(title),OrgasmViewModel.class);
+        return ResponseEntity.ok().body(model);
+    }
+
+
+    @PostMapping(value = "/test/up" )
+    @PreAuthorize("hasRole('USER')")
+    public void doStuff(@RequestBody MultipartFile file){
+
+        System.out.println();
+
+    }
+
 }

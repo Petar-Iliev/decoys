@@ -14,7 +14,7 @@ import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.exceptions.FakeOrgasmException;
 import pesko.orgasms.app.repository.OrgasmRepository;
 import pesko.orgasms.app.repository.UserRepository;
-import pesko.orgasms.app.service.OrgasmServiceImpl;
+import pesko.orgasms.app.service.impl.OrgasmServiceImpl;
 import pesko.orgasms.app.utils.ValidatorUtil;
 import pesko.orgasms.app.utils.ValidatorUtilImpl;
 import pesko.orgasms.serviceUtils.OrgasmServiceUtil;
@@ -70,25 +70,28 @@ public class OrgasmServiceTest {
 
     }
 
+
+    //TODO
     @Test
     public void saveOrgasm_whenValid_shouldReturnOrgasmServiceModel() {
 
         OrgasmServiceModel orgasm = new OrgasmServiceModel();
-        orgasm.setImgUrl("valid");
+
         orgasm.setTitle("valid");
         orgasm.setVideoUrl("valid");
-        OrgasmServiceModel savedOrgasm = orgasmService.saveOrgasm(orgasm);
+        OrgasmServiceModel savedOrgasm = orgasmService.saveOrgasm(orgasm,"bla");
 
         Assert.assertEquals(orgasm, savedOrgasm);
 
     }
 
+    //TODO
     @Test(expected = FakeOrgasmException.class)
     public void saveOrgasm_whenInvalid_shouldThrowIlligalArgumentException() {
 
         OrgasmServiceModel orgasm = new OrgasmServiceModel();
 
-        orgasmService.saveOrgasm(orgasm);
+        orgasmService.saveOrgasm(orgasm,"bla");
 
     }
 
