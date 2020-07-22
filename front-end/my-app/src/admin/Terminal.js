@@ -15,8 +15,9 @@ function  Terminal(props) {
 
   function help(){
        
-        return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [username] [role {ADMIN,GUEST,USER}]\n
-        \n addOrgasm [title] [content {OPTIONAL}\n\n  (Choose File VIDEO)\n\n submit - creates Orgasm AFTER ALL PROPS ARE FILLED\n\n `
+        return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [username] [role {ADMIN,GUEST,USER}]\n\n
+ setPending [orgasmTitle] - toggle pending state of an Orgasm
+        \n setOrgasmTitle [title] \n\n setOrgasmFile (Choose File Audio/Video)\n\n submit - creates Orgasm AFTER ALL PROPS ARE FILLED (Title & File)\n\n `
     }
     
 
@@ -33,17 +34,28 @@ function  Terminal(props) {
         const cmd=input[0];
      
         let name;
+        let data
        let retMsg="Invalid command type help for more info";
         switch(cmd){
-            case "find":
-             name=trimmedCommand.slice(5);
-             let data = await props.methods.find(name);
+            case "findU":
+             name=trimmedCommand.slice(6);
+          data = await props.methods.find(name);
              if(!data.id){
                 retMsg=`${name} doesn't exists`
              }else{    
                  retMsg=`ID: ${data.id}\nUsername: ${data.username}\nRoles: ${data.authorities.join(", ")}\nOrgasms:\n`
                  data.orgasms.forEach(e=>{ retMsg+= `ID: ${e.id}\n Title: ${e.title}\n Pending: ${e.pending}\n${e.videoUrl}\n`})
              }  
+            break;
+
+            case "findO":
+                name=trimmedCommand.slice(6);
+                 data = await props.methods.findOrgasm(name);
+                if(!data.id){
+                   retMsg=`${name} doesn't exists`
+                }else{    
+                    retMsg=`ID: ${data.id}\nTitle:${data.title}\nVideoUrl:${data.videoUrl}\nPending:${data.pending.toString()}`
+                }  
             break;
 
             case "Duser":

@@ -2,21 +2,18 @@ package pesko.orgasms.app.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pesko.orgasms.app.domain.entities.Role;
 import pesko.orgasms.app.domain.entities.Roles;
 import pesko.orgasms.app.domain.entities.User;
-import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
 import pesko.orgasms.app.exceptions.InvalidUserException;
 import pesko.orgasms.app.exceptions.UserAlreadyExistException;
-import pesko.orgasms.app.global.GlobalStaticConsts;
+import pesko.orgasms.app.global.GlobalExceptionMessageConstants;
 import pesko.orgasms.app.repository.UserRepository;
 import pesko.orgasms.app.service.RoleService;
 import pesko.orgasms.app.service.UserService;
@@ -25,6 +22,8 @@ import pesko.orgasms.app.utils.ValidatorUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static pesko.orgasms.app.global.GlobalExceptionMessageConstants.USER_NOT_FOUND;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,25 +35,27 @@ public class UserServiceImpl implements UserService {
     private final ValidatorUtil validator;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder, ValidatorUtil validator) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, RoleService roleService
+            , BCryptPasswordEncoder bCryptPasswordEncoder, ValidatorUtil validator) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.validator = validator;
+
     }
 
     @Override
     public UserServiceModel registerUser(UserServiceModel userServiceModel) {
 
         if (!this.validator.isValid(userServiceModel)) {
-            throw new InvalidUserException(GlobalStaticConsts.INVALID_PROPS);
+            throw new InvalidUserException(GlobalExceptionMessageConstants.INVALID_PROPS);
         }
 
         User userChecker = this.userRepository.findByUsername(userServiceModel.getUsername()).orElse(null);
 
         if (userChecker != null) {
-            throw new UserAlreadyExistException(GlobalStaticConsts.USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistException(GlobalExceptionMessageConstants.USER_ALREADY_EXISTS);
         }
 
         User user = this.modelMapper.map(userServiceModel, User.class);
@@ -70,10 +71,10 @@ public class UserServiceImpl implements UserService {
     public void deleteUserByUsername(String username) {
 
 
-        User user = this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+        User user = this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
         this.checkIfRoot(user);
-//        this.userRepository.deleteUserByIdCustom(user.getId());
+
         this.userRepository.deleteById(user.getId());
     }
 
@@ -90,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserServiceModel modifyRole(String username, String role) {
         User user = this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User doesn't exist"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
         checkIfRoot(user);
         user.setRoles(new ArrayList<>());
@@ -135,6 +136,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return this.userRepository.findByUsername(s).orElseThrow(() -> new UsernameNotFoundException(GlobalStaticConsts.USERNAME_NOT_FOUND));
+        return this.userRepository.findByUsername(s).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
     }
 }

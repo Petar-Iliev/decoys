@@ -38,16 +38,16 @@ public class UserController {
     public ResponseEntity<InfoModel> register(@Valid @RequestBody UserBindingModel userBindingModel, BindingResult bindingResult) {
 
 
+
         if(bindingResult.hasErrors() || !userBindingModel.getPassword().equals(userBindingModel.getRepeatPassword())){
             throw new InvalidUserException("Hacker Attack Detected Calling FBI");
         }
 
 
-
         UserServiceModel userServiceModel1 = this.modelMapper.map(userBindingModel, UserServiceModel.class);
          this.modelMapper.map(this.userService.registerUser(userServiceModel1), UserBindingModel.class);
 
-         return ResponseEntity.status(204).body(new InfoModel("Created"));
+         return ResponseEntity.status(201).body(new InfoModel("Created"));
     }
 
 

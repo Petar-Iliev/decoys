@@ -1,4 +1,4 @@
-package pesko.orgasms.app.domain.models.view;
+package pesko.orgasms.app.domain.models.response;
 
 
 import lombok.Getter;
@@ -6,14 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrgasmViewModel {
+public class OrgasmResponseModel {
 
     private Long id;
 
     private String title;
-
-    private String content;
-
+    
     private String videoUrl;
 
     private boolean pending;

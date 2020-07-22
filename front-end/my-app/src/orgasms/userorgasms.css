@@ -75,11 +75,11 @@
 }
 
 .create-org-user:hover{
-    transform: scale(0.9);
+    transform: scale(0.8);
     background-color: #B594B6;
     color: #ECFFF8;
-    /* font-size: 38px; */
-}
+    font-size: 38px;
+ } 
 
 .pop-up-create{
     position: fixed;
@@ -133,4 +133,44 @@
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
+}
+
+.close-create-btn{
+    position: absolute;
+    left: 92%;
+    top: 0;
+
+}
+
+.close-create-btn svg{
+    width: 30px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px){
+
+    .orgasms-holder{
+        display: grid;
+        grid-template-areas: "user" "liked" "disliked";
+        margin-left: 0%;
+
+    }
+    .user-orgasms{
+        grid-area: user;
+
+    }
+
+    .user-disliked-orgasms{
+        grid-area: disliked;
+    }
+
+    .user-liked-orgasms{
+      
+        grid-area: liked;
+    }
+
+    .org-list{
+        padding: 0px;
+        margin-bottom: 50px;
+    }
 }

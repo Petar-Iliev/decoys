@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 
 import {ReactComponent as Cassette} from '../main/svgs/cassette.svg';
 import {ReactComponent as Delete} from '../main/svgs/remove.svg';
@@ -24,17 +24,19 @@ function Orgasm(props){
                 "Authorization":Cookies.get("token")
             },
             
-        }).then(e=>{
-            // window.location.reload(false);
+        }).then(()=>{
+            window.location.reload(false);
         }).catch(err=>console.error(err))
     }
+
+   
 
         return(
             
            
            <div className="org-info-line">
                <span className="org-info-line-title">{props.title.length < 10 ? props.title : props.title.slice(0,7)+".." }</span>
-               <Cassette className="casset-on-off" onClick={playPause}/>
+            <Cassette className="casset-on-off" onClick={playPause}/>
                {props.pending!==undefined &&
                <>
                {props.pending ? <Unchecked title="pending" className="check-mark"/> : <Checked title="approved" className="check-mark"/>}

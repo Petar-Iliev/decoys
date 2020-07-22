@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Jwt extends BaseEntity{
+
 
     @Column(unique = true,nullable = false,columnDefinition = "LONGTEXT")
     private String token;

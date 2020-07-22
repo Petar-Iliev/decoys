@@ -1,32 +1,33 @@
 package pesko.orgasms.app.configurations;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.TypeMap;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import pesko.orgasms.app.domain.models.service.RoleServiceModel;
-import pesko.orgasms.app.domain.models.service.UserServiceModel;
-import pesko.orgasms.app.domain.models.view.UserInfoResponseModel;
 import pesko.orgasms.app.utils.ValidatorUtil;
 import pesko.orgasms.app.utils.ValidatorUtilImpl;
 
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-
+@Getter
+@Setter
 @org.springframework.context.annotation.Configuration
+@EnableCaching
 public class Configuration {
+
+    @Value(value = "${spring.mail.password}")
+    private String emailPassword;
 
 
     @Bean
     public ModelMapper modelMapper(){
 
         ModelMapper mapper =new ModelMapper();
-
 
         return mapper;
     }
@@ -48,7 +49,7 @@ public class Configuration {
         mailSender.setPort(587);
 
         mailSender.setUsername("decoybank@gmail.com");
-        mailSender.setPassword("B@NK_****_sveta");
+        mailSender.setPassword(emailPassword);
 
         Properties props=mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol","smtp");

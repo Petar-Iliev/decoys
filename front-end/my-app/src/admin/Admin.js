@@ -53,10 +53,11 @@ class Admin extends React.Component{
         this.handleTerminal=this.handleTerminal.bind(this);
 
       
-        this.uploadVideo=this.uploadVideo.bind(this);
+        this.uploadBackup=this.uploadBackup.bind(this);
 
 
         this.findUser=this.findUser.bind(this);
+        this.findOrgasm=this.findOrgasm.bind(this);
         this.setUserRole=this.setUserRole.bind(this);
         this.deleteType=this.deleteType.bind(this);
     
@@ -97,16 +98,20 @@ class Admin extends React.Component{
   
     }
 
-    async uploadVideo(){
+    async uploadBackup(){
         const files=this.state.video;
         const data=new FormData();
         data.append("file",files[0]);
         data.append("upload_preset","pesho_api")
        
-        const res=await fetch(this.state.uploadUrl+"video/upload",{
+        const res=await fetch("https://api.cloudinary.com/v1_1/twisteddd/video/upload",{
             method:"POST",
             body:data
         })
+        .catch(err=>{
+            console.error(err);
+        })
+    
 
         const file= await res.json();
 
@@ -139,9 +144,6 @@ class Admin extends React.Component{
 
    async handleSubmit(e){
       
- 
-    
-
            if(this.state.title==="" || this.state.video===""){
                return "Invalid Props"
            }
@@ -151,30 +153,29 @@ class Admin extends React.Component{
            if(videoType!=="audio/mpeg" && videoType!=="video/mp4"){
                   return "Invalid MIME TYPE";
            }
+        const files=this.state.video;
+        const data=new FormData();
+        data.append("file",files[0]);
+
+      return  await fetch(`http://localhost:8050/orgasm/create/${this.state.title}`,{
+            method:"POST",
+            headers:{
+                "Authorization":Cookies.get("token")
+            },
+            body:data
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+     
+            if(data.ex){
+                return data.ex;
+            }
+            return "Created"
+        })
+        .catch(err=>{
+            console.error(err);
+        })
          
-        await this.uploadVideo();
-        const data={
-            "title":this.state.title,
-            "content":this.state.content,
-            "videoUrl":this.state.videoUrl
-        }
-
-let raw = JSON.stringify(data);
-    const token=Cookies.get("token");
-
-let requestOptions = {
-  method: 'POST',
-  headers: {
-      'Authorization':token,
-      "Content-Type":"application/json",
-  },
-  body: raw,
-};
-
-await fetch("http://localhost:8050/orgasm/create", requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
     }
 
 
@@ -214,6 +215,17 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
        
     }
 
+    async findOrgasm(title){
+
+      return await fetch(`http://localhost:8050/admin/find/orgasm/${title}`,{
+            method:"GET",
+            headers:{
+                "Authorization":Cookies.get("token")
+            }
+        })
+        .then(resp=>resp.json())
+        .catch(err=>console.error(err));
+    }
   
 
     async setUserRole(username,role){
@@ -334,6 +346,7 @@ await fetch("http://localhost:8050/orgasm/create", requestOptions)
 
         const allowedMethos={
          find:this.findUser,
+         findOrgasm:this.findOrgasm,
          setRole:this.setUserRole,
          delete:this.deleteType,
          addOrgasm:this.addOrgasm,

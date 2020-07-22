@@ -1,9 +1,7 @@
-package pesko.orgasms.app.domain.models.view;
+package pesko.orgasms.app.domain.models.response;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
-import pesko.orgasms.app.domain.entities.Roles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,7 @@ public class UserInfoResponseModel {
     private String username;
     private Long id;
     private List<String> authorities;
-    private List<OrgasmViewModel> orgasms;
+    private List<OrgasmResponseModel> orgasms;
 
     public UserInfoResponseModel(){
 

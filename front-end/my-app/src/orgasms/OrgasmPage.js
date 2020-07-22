@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
-import Orgasm from './Orgasm'
-import Cookies, { set } from 'js-cookie'
-import orgasmstlye from './orgasm.css'
-import LogContext from '../contexts/LogContext'
-import {ReactComponent as Robot} from '../main/svgs/robot.svg';
+
+import Cookies from 'js-cookie'
+
 
 import {useSelector} from 'react-redux'
 import {ReactComponent as BlackHeart} from './orgmp/healthy.svg';
 import {ReactComponent as QuestionMark} from './orgmp/question.svg';
+import {ReactComponent as Thumb} from './orgmp/like.svg'
+import {ReactComponent as ThumbDown} from './orgmp/dislike.svg'
 import { CSSTransition } from 'react-transition-group'
 
 
@@ -228,12 +228,12 @@ return(
  <div className="push-button-holder">
      {like && 
  <div className="l-d-btn likes" onClick={likeIt}>
- <BlackHeart className="liked-btn"/>
+ <Thumb className="liked-btn"/>
  </div>
  }
  {dislike &&
  <div className="l-d-btn dislikes" onClick={disLikeIt}>
- <BlackHeart className="liked-btn"/>
+ <ThumbDown className="liked-btn"/>
  </div>
  }
  </div>
@@ -245,10 +245,10 @@ return(
      <QuestionMark className="random-btn" onClick={getRandom}/>
      </div>
      <div className="option-button">
-     <BlackHeart className="liked-btn" onClick={getLiked}/>
+     <Thumb className="liked-btn" onClick={getLiked}/>
      </div>
      <div className="option-button">
-     <BlackHeart className="liked-btn" onClick={getDisliked}/>
+     <ThumbDown className="liked-btn" onClick={getDisliked}/>
      </div>
 
     

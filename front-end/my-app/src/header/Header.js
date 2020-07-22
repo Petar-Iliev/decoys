@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 
 
 import {CSSTransition} from 'react-transition-group'
@@ -17,6 +17,7 @@ import {
 import Cookies from 'js-cookie'
 
 // import LogContext from '../contexts/LogContext'
+
 import {useSelector,useDispatch} from 'react-redux'
 import {log} from '../actions/index.js';
 
@@ -61,7 +62,10 @@ const Header =()=>{
       return(
 
         <li className="item four">
-         <Link href={window.location.pathname} className="icon-button" onClick={()=>setOpen(!open)}>
+         <Link to="/" className="icon-button" onClick={(e)=>{ 
+           e.preventDefault();
+          setOpen(!open)
+           }}>
       {props.icon}
       </Link>
       <CSSTransition in={open} timeout={500} unmountOnExit classNames="my-node">

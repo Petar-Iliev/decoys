@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
-import SideNav from './SideNav';
+
 import UserInfo from './UserInfo';
 import Create from './Create'
 
@@ -16,7 +16,7 @@ function Desktop(props){
     const [usrIn,setUsrIn]=useState(true);
    
 
-    const [createIn,setCreateIn]=useState(false);
+
     
     function handleInput(e){
 

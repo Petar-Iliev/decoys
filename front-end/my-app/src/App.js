@@ -3,12 +3,12 @@ import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import allReducers from './reducers/index.js';
 
-import './App.css';
+
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
+  
   
 } from "react-router-dom";
 import Header from './header/Header'
@@ -31,12 +31,13 @@ const App = ()=> {
 
 
       const store =createStore(allReducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-
+    
   return (
     <>
     <Router>
       <Provider store={store}>
-    <Header/>
+<Header/> 
+
       <Switch>
         <Route exact path="/" component={Main}/>
         <Route  path="/login" component={Login}/>

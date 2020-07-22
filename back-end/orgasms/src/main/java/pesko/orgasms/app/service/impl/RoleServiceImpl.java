@@ -2,6 +2,7 @@ package pesko.orgasms.app.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pesko.orgasms.app.domain.entities.Role;
 import pesko.orgasms.app.domain.entities.Roles;
@@ -34,7 +35,9 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+
     @Override
+    @Cacheable("roles")
     public List<RoleServiceModel> getAllRoles() {
        List<RoleServiceModel>roles=this.roleRepository.findAll().stream().map(e->{
         return  this.modelMapper.map(e,RoleServiceModel.class);

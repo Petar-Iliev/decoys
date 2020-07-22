@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
-// import {ReactComponent as Smartphone} from '../main/svgs/smartphone.svg'
-import {ReactComponent as Smartphone} from './main/svgs/smartphone.svg';
+
 import {ReactComponent as Email} from './main/svgs/email(1).svg';
 import {ReactComponent as Mail} from './main/svgs/mailbox.svg';
 import {ReactComponent as Target} from './main/svgs/target.svg';

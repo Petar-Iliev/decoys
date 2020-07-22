@@ -3,20 +3,32 @@ import Cookies from 'js-cookie'
 import './userorgasms.css';
 import Orgasm from './Orgasm'
 import CreateOrgasm from './CreateOrgasm'
-import {ReactComponent as BlackHeart} from './orgmp/healthy.svg';
+import {ReactComponent as Thumb} from './orgmp/like.svg';
+import {ReactComponent as ThumbDown} from './orgmp/dislike.svg';
 import {ReactComponent as Person} from './orgmp/man.svg'
 
-function UserOrgasms(){
+import {useSelector,useDispatch} from 'react-redux'
+import {log} from '../actions/index.js';
+
+function UserOrgasms(props){
 
     const[liked,setLiked]=useState([]);
     const[disliked,setDisliked]=useState([]);
     const[own,setOwn]=useState([]);
     const [create,setCreate]=useState(false);
-    useEffect(async ()=>{
 
-        setOwn(await fetchData("all-own"));
-        setLiked(await fetchData("all-liked"));
-        setDisliked(await fetchData("all-disliked"));
+    const logged=useSelector(state=>state.log);
+    const dispatcher=useDispatch();
+
+    useEffect( ()=>{
+
+        async function init(){
+            setOwn(await fetchData("all-own"));
+            setLiked(await fetchData("all-liked"));
+            setDisliked(await fetchData("all-disliked"));
+        }
+
+     init();
      
     },[]);
 
@@ -29,15 +41,31 @@ function UserOrgasms(){
                "Authorization":Cookies.get("token")
            }
        })
+        .then(resp=>{
+            
+            if(resp.status > 400){
+                dispatcher(log());
+                Cookies.remove("token");
+                props.history.push("/login");
+                throw Error("Not logged");
+            } else{
+
+            return resp;
+            }
+        })
         .then(resp=>resp.json())
         .catch(err=>console.error(err))
     }
 
     return(
         <>
-        {create && <CreateOrgasm/>}
+  
+        {create && <CreateOrgasm closeCreate={setCreate}/>}
+        {logged &&
         <div className="orgasms-holder">
-      <div className="user-liked-orgasms org-list"><BlackHeart title="pending"/>  {liked.map(e=><Orgasm key={e.id} title={e.title} videoUrl={e.videoUrl}/>)}</div>
+      <div className="user-liked-orgasms org-list">
+          <Thumb title="pending"/> 
+           {liked.map(e=><Orgasm key={e.id} title={e.title} videoUrl={e.videoUrl}/>)}</div>
       <div className="user-orgasms org-list">
 
           <Person className="metal-man"/>
@@ -47,10 +75,10 @@ function UserOrgasms(){
       </div>
 
       <div className="user-disliked-orgasms org-list">
-          <BlackHeart title="approved"/> 
+          <ThumbDown title="approved"/> 
           {disliked.map(e=><Orgasm key={e.id} title={e.title} videoUrl={e.videoUrl}/>)}</div>
         </div>
-
+}
         </>
     )
 }

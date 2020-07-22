@@ -13,7 +13,7 @@ const About = () =>{
              Found voice actors which have experienced orgasms on their own.<br/>
 Hired biggest orgasmologist on the planet Dr. P.I.I.<br/>
 
-<img src={img} className="pesho-pic"/> <br/>
+<img alt="Picture of doctor P.I.I" src={img} className="pesho-pic"/> <br/>
 
  </p>
 

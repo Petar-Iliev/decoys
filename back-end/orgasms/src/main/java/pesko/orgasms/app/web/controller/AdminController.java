@@ -13,14 +13,13 @@ import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
-import pesko.orgasms.app.domain.models.view.AdminUrlViewModel;
-import pesko.orgasms.app.domain.models.view.OrgasmViewModel;
-import pesko.orgasms.app.domain.models.view.UserInfoResponseModel;
+import pesko.orgasms.app.domain.models.response.AdminUrlViewModel;
+import pesko.orgasms.app.domain.models.response.OrgasmResponseModel;
+import pesko.orgasms.app.domain.models.response.UserInfoResponseModel;
 import pesko.orgasms.app.exceptions.FakeOrgasmException;
 import pesko.orgasms.app.service.OrgasmService;
 import pesko.orgasms.app.service.UserService;
 
-import java.security.Principal;
 import java.util.stream.Collectors;
 
 @RestController
@@ -65,14 +64,14 @@ public class AdminController {
 
     @GetMapping("/find/orgasm/{name}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<OrgasmViewModel> findOrgasm(@PathVariable(name = "name") String name) {
+    public ResponseEntity<OrgasmResponseModel> findOrgasm(@PathVariable(name = "name") String name) {
 
         OrgasmServiceModel orgasmServiceModel = this.orgasmService.findByTitle(name);
 
         if (orgasmServiceModel == null) {
             throw new FakeOrgasmException("Orgasm doesn't exist");
         }
-      OrgasmViewModel orgasm= this.modelMapper.map(orgasmServiceModel, OrgasmViewModel.class);
+      OrgasmResponseModel orgasm= this.modelMapper.map(orgasmServiceModel, OrgasmResponseModel.class);
         return ResponseEntity.ok().body(orgasm);
     }
 
@@ -112,9 +111,9 @@ public class AdminController {
 
     @PutMapping("/modi/pending")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<OrgasmViewModel> modifyOrgasm(@RequestParam(value = "title",required = true) String title){
+    public ResponseEntity<OrgasmResponseModel> modifyOrgasm(@RequestParam(value = "title",required = true) String title){
 
-          OrgasmViewModel model=this.modelMapper.map(this.orgasmService.modifyPending(title),OrgasmViewModel.class);
+          OrgasmResponseModel model=this.modelMapper.map(this.orgasmService.modifyPending(title), OrgasmResponseModel.class);
         return ResponseEntity.ok().body(model);
     }
 

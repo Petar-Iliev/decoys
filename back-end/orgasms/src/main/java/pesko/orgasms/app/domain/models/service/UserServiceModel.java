@@ -22,6 +22,7 @@ public class UserServiceModel {
     @NotNull
     @NotBlank
     private String password;
+
     private List<OrgasmServiceModel> orgasms;
 
     private List<RoleServiceModel>roles;

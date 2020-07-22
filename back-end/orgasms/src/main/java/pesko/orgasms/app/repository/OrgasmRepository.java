@@ -48,9 +48,9 @@ public interface OrgasmRepository extends JpaRepository<Orgasm, Long> {
     @Query(value = "SELECT * FROM orgasm o join orgasm_like_dislike old on old.orgasm_id=o.id where  old.like_dislike_key=?1 AND old.like_dislike = FALSE", nativeQuery = true)
     List<Orgasm> findAllOrgasmsDislikedBy(String username);
 
-    @Transactional
-    @Modifying
-    @Query(value = "DELETE FROM orgasm_like_dislike old where old.orgasm_id = ?1 ; DELETE FROM orgasm o where o.user_id = ?1 AND o.title = ?2",nativeQuery = true)
-    void ffs(Long id,String title);
+//    @Transactional
+//    @Modifying
+//    @Query(value = "DELETE FROM orgasm_like_dislike old where old.orgasm_id = ?1 ; DELETE FROM orgasm o where o.user_id = ?1 AND o.title = ?2",nativeQuery = true)
+//    void ffs(Long id,String title);
 
 }

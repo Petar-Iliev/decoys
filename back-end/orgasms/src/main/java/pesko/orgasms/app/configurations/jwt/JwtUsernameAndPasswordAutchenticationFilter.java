@@ -75,15 +75,9 @@ public class JwtUsernameAndPasswordAutchenticationFilter extends UsernamePasswor
                 .compact(); //Create (Build)
 
 
-
-
-
         response.addHeader(jwtConfiguration.getAuthorizationHeader(),jwtConfiguration.getTokenPrefix() + token);
 
 
-
         this.jwtService.saveToken(token);
-
-
     }
 }

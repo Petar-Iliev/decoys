@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 
 import {useSelector,useDispatch,Selector} from 'react-redux'
 import {log} from '../actions/index.js'
-
+import Loader from '../Loader'
 
 
 function Login(props){
@@ -14,6 +14,7 @@ function Login(props){
     const [username,setUsername] =useState("");
     const [password,setPassword] =useState("");
     const [invalidInput,setInvalidInput] =useState("");
+    const [load,setLoad] =useState(false);
 
     const logged=useSelector(state=>state.log);
     const dispatcher=useDispatch();
@@ -21,7 +22,7 @@ function Login(props){
     function handleSubmit(e){
         e.preventDefault();
         
-
+           setLoad(true);
         let data={
             username:username,
             password:password
@@ -46,6 +47,7 @@ function Login(props){
         }).catch(err=>{
             console.error(err);
           setInvalidInput("Invalid Username OR Password");
+          setLoad(false);
         })
 
          
@@ -95,6 +97,7 @@ function Login(props){
 
          </div>
            </div>
+           {load && <Loader/>}
            </>
         );
     }
