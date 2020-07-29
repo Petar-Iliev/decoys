@@ -115,15 +115,16 @@ function  Terminal(props) {
   }
   
     return(
-      
+      <>
         <pre className="pre-terminal">
        
         <p className="terminal-intro">Terminal V1 </p>
     {lines.map(e=>(<div key={e.id} className="command-line"> {e.value} </div>))}
        <div className="current-command-line">Admin:<textarea rows={1} cols={1} onChange={(e)=>setCommand(e.target.value)} onKeyDown={executeLine} value={command}></textarea></div> 
         </pre>
+           
 
-       
+       </>
     )
 }
 

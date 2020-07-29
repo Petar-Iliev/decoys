@@ -128,7 +128,7 @@ const Header =()=>{
                 <nav className="nav">
                   <ul className="container">
                     <Link to="/" className="item one">LOGO</Link>
-                    <Link to="/" className="item two">HOME</Link>   
+                    <Link to="/calendar" className="item two">EVENTS</Link>   
                     <Link to="/about" className="item three">ABOUT</Link>
                      <Profile className="item four"  icon={<Blind/>}>
                   

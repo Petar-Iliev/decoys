@@ -168,26 +168,25 @@ import { CSSTransition } from 'react-transition-group'
        refresh();
        
           
-       fetch("http://localhost:8050/orgasm/like",{
+       fetch(`http://localhost:8050/orgasm/like/${title}`,{
            method:"PUT",
            headers:{
                "Authorization":Cookies.get("token"),
-               "Content-Type":"application/json"
            },
-           body:JSON.stringify({title})
+          
        })
 
      }
      function disLikeIt(){
        refresh();
         
-        fetch("http://localhost:8050/orgasm/dislike",{
+        fetch(`http://localhost:8050/orgasm/dislike/${title}`,{
             method:"PUT",
             headers:{
                 "Authorization":Cookies.get("token"),
-                "Content-Type":"application/json"
+              
             },
-            body:JSON.stringify({title})
+          
         })
      }
 

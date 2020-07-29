@@ -7,10 +7,8 @@ import allReducers from './reducers/index.js';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
+  Route,} from "react-router-dom";
   
-  
-} from "react-router-dom";
 import Header from './header/Header'
 import Philosophy from './staticPages/Philosophy'
 import Orgasm from './orgasms/OrgasmPage'
@@ -23,7 +21,7 @@ import Stripe from './stripe/Stripe'
 import Admin from './admin/Admin'
 import Contact from './Contact';
 import About from './about/About';
-
+import Calendar from './Calendar';
 
 
 const App = ()=> {
@@ -49,6 +47,7 @@ const App = ()=> {
         <Route path="/about" component={About}/>
         <Route path="/contact" component={Contact}/>
         <Route path="/user/orgasms" component={UserOrgasms}/>
+        <Route path="/calendar" component={Calendar}/>
      
         <Route component={NotFound}/>
       </Switch>

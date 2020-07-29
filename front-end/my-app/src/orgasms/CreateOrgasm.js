@@ -22,7 +22,10 @@ function CreateOrgasm(props){
         if(input.length<1){
             setErrMsg("Title must be atleast 1 character");
             setErr(true);
-        }else if(file===null || file.type !== "audio/mpeg" && file.type !=="video/mpeg" && file.type!=="video/mp4" && file.type!=="audio/mp3" && file.type!=="video/mp3"){
+        }else if(file===null || file.type !== "audio/mpeg"
+         && file.type !=="video/mpeg" && file.type!=="video/mp4" && file.type!=="audio/mp3" 
+         && file.type!=="video/mp3"
+         && file.type !== "audio/wav"){
             setErrMsg("Invalid File");
             setErr(true);
         }else{

@@ -1,11 +1,14 @@
 import React, { useState } from  'react'
-
+import Loader from '../Loader';
 
 function Create(props){
 
     const [title,setTitle]= useState("");
+    const [load,setLoad] = useState(false);
+    const [msg,setMsg]=useState("");
 
     return(
+        <>
         <div className="create-orgasm-desk">
          
          <span>Title</span>
@@ -16,10 +19,16 @@ function Create(props){
          <div className="choose-file" onClick={props.handleFile}>CHOOSE FILE</div>
 
          <div className="desk-sub-org" onClick={async function(){
+             setLoad(true);
              await props.handleTitle(title);
-             await props.submit();
+           const resp=  await props.submit();
+            setLoad(false);
+           setMsg(resp);
          }}>SUBMIT</div>
         </div>
+        <div className="desk-msg-resp">{msg}</div>
+      {load && <Loader/>}
+        </>
     )
 }
 

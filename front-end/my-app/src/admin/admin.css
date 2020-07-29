@@ -181,6 +181,10 @@
     margin-bottom: 50px;
 }
 
+.user-info{
+    margin-top: 50px;
+}
+
 .option-nav-ad{
     background-color: cornflowerblue;
     border: 5px solid black;
@@ -208,3 +212,13 @@ flex-direction: column;
     border: 5px solid black;
     cursor: pointer;
 }
+
+
+.desk-msg-resp{
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    background: darkgoldenrod;
+    border-radius: 10px;
+}
+

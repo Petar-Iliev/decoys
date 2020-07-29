@@ -26,11 +26,11 @@ function Contact(props){
       function submitMail(){
 
        let exp=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-       if(email.trim!=="" && exp.test(email)===false){
+       if(email.trim!=="" && exp.test(email)===false || text.trim().length < 2){
            alert("invalid email");
        }else{
 
-        const data={from:email,text:`${email} - ${text}`,subject}
+        const data={from:email,text:`${text}`,subject}
         fetch("http://localhost:8050/mail/send",{
             method:"POST",
             headers:{

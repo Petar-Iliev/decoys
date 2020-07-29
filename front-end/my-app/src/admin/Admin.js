@@ -1,11 +1,12 @@
-import React, { createRef } from 'react'
-import Terminal from './Terminal'
+import React, { createRef } from 'react';
+import Terminal from './Terminal';
 import Desktop from './Desktop';
 
-import admin from './admin.css'
-import Cookies from 'js-cookie'
 
-import {CSSTransition} from 'react-transition-group'
+import admin from './admin.css';
+import Cookies from 'js-cookie';
+
+import {CSSTransition} from 'react-transition-group';
 
 import {ReactComponent as TerminalSVG} from '../main/svgs/command-line.svg';
 import {ReactComponent as DesktopSVG} from '../main/svgs/desktop.svg';
@@ -18,7 +19,7 @@ class Admin extends React.Component{
         this.state={
             valid:false,
             title:"",
-            content:"",
+          
             video:"",
             videoUrl:"",
             uploadUrl:"",
@@ -37,12 +38,12 @@ class Admin extends React.Component{
    
     
 
-         this.imgRef=createRef();
+     
          this.videoRef=createRef();
       
      
       
-        this.handleContent=this.handleContent.bind(this);
+     
         this.handleName=this.handleName.bind(this);
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleVideo=this.handleVideo.bind(this);
@@ -134,10 +135,7 @@ class Admin extends React.Component{
     
         this.setState({title: event.target.value});
     }
-    handleContent(event){
-    
-        this.setState({content: event.target.value});
-    }
+  
  
   
 
