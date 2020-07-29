@@ -232,7 +232,7 @@ public class OrgasmServiceTest {
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
         when(orgasmRepository.findByTitle("title")).thenReturn(Optional.of(orgasm));
 
-        OrgasmServiceModel result = orgasmService.dislikeOrgasm(orgasmServiceModel, user.getUsername());
+        OrgasmServiceModel result = orgasmService.dislikeOrgasm("title", user.getUsername());
 
         Assert.assertEquals(true, result.getLikeDislike().containsKey("user"));
         Assert.assertEquals(false, result.getLikeDislike().get("user"));
@@ -245,7 +245,7 @@ public class OrgasmServiceTest {
         orgasmServiceModel.setTitle("title");
 
 
-        orgasmService.dislikeOrgasm(orgasmServiceModel, "invalidUser");
+        orgasmService.dislikeOrgasm("title", "invalidUser");
 
     }
 
@@ -259,7 +259,7 @@ public class OrgasmServiceTest {
         orgasmServiceModel.setTitle("title");
 
 
-        orgasmService.dislikeOrgasm(orgasmServiceModel, user.getUsername());
+        orgasmService.dislikeOrgasm("title", user.getUsername());
 
     }
 
@@ -275,7 +275,7 @@ public class OrgasmServiceTest {
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(user));
         when(orgasmRepository.findByTitle("title")).thenReturn(Optional.of(orgasm));
 
-        OrgasmServiceModel result = orgasmService.likeOrgasm(orgasmServiceModel, user.getUsername());
+        OrgasmServiceModel result = orgasmService.likeOrgasm("title", user.getUsername());
 
         Assert.assertEquals(true, result.getLikeDislike().containsKey("user"));
         Assert.assertEquals(true, result.getLikeDislike().get("user"));
@@ -288,7 +288,7 @@ public class OrgasmServiceTest {
         orgasmServiceModel.setTitle("title");
 
 
-        orgasmService.likeOrgasm(orgasmServiceModel, "invalidUser");
+        orgasmService.likeOrgasm("title", "invalidUser");
 
     }
 
@@ -302,7 +302,7 @@ public class OrgasmServiceTest {
         orgasmServiceModel.setTitle("title");
 
 
-        orgasmService.likeOrgasm(orgasmServiceModel, user.getUsername());
+        orgasmService.likeOrgasm("title", user.getUsername());
 
     }
 

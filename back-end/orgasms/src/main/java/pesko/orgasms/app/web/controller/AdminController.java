@@ -118,12 +118,5 @@ public class AdminController {
     }
 
 
-    @PostMapping(value = "/test/up" )
-    @PreAuthorize("hasRole('USER')")
-    public void doStuff(@RequestBody MultipartFile file){
-
-        System.out.println();
-
-    }
 
 }

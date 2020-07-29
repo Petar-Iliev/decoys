@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -13,8 +14,10 @@ public class EmailBindingModel {
 
 
 
+
     private String from;
     private String subject;
     @Length(min = 2)
+    @NotBlank
     private String text;
 }

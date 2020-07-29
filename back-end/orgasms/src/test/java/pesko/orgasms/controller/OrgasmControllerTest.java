@@ -1,183 +1,385 @@
 package pesko.orgasms.controller;
 
-import com.amazonaws.services.s3.AmazonS3;
+
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import org.aspectj.weaver.ast.Or;
+import org.hibernate.boot.spi.InFlightMetadataCollector.EntityTableXref;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.MimeType;
 import pesko.orgasms.app.domain.entities.Orgasm;
 import pesko.orgasms.app.domain.entities.User;
-import pesko.orgasms.app.domain.models.binding.OrgasmBindingModel;
-import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.exceptions.FakeOrgasmException;
+import pesko.orgasms.app.global.MIMETypeConstants;
 import pesko.orgasms.app.repository.OrgasmRepository;
 import pesko.orgasms.app.repository.UserRepository;
-import pesko.orgasms.app.service.OrgasmService;
-import pesko.orgasms.app.web.controller.OrgasmController;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@AutoConfigureMockMvc
+@PropertySource(value={"classpath:application.properties"})
 public class OrgasmControllerTest {
 
-    OrgasmController orgasmController;
-
-    @MockBean
-    OrgasmRepository orgasmRepository;
-
-    @MockBean
-    BindingResult bindingResult;
+    @Autowired
+    MockMvc mockMvc;
 
     @Autowired
-    OrgasmService orgasmService;
-    @Autowired
-    ModelMapper modelMapper;
-    OrgasmBindingModel orgasm=new OrgasmBindingModel();
-
-    @MockBean
-    Principal principal;
-
-    @MockBean
     UserRepository userRepository;
 
-    @MockBean
-    AmazonS3 s3;
+    @Autowired
+    OrgasmRepository orgasmRepository;
 
+    User user = new User();
+    Orgasm orgasm = new Orgasm();
 
-//    ArgumentCaptor<Orgasm> argument=ArgumentCaptor.forClass(Orgasm.class);
-//        orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//        Mockito.verify(orgasmRepository).saveAndFlush(argument.capture());
+    @BeforeEach
+     void init(){
 
-    @Before
-    public void init(){
-        User user=new User();
-        user.setUsername("peshoo");
-        user.setPassword("123123");
-        user.setOrgasms(new ArrayList<>());
-        user.setRoles(new ArrayList<>());
+        this.user.setUsername("validUser");
+        this.user.setPassword("validPassword");
 
-
-        when(orgasmRepository.save(any())).thenReturn(new Orgasm());
-        when(bindingResult.hasErrors()).thenReturn(true);
-        when(principal.getName()).thenReturn("peshoo");
-        when(userRepository.findByUsername("peshoo")).thenReturn(Optional.of(user));
-
-
-        orgasmController=new OrgasmController(orgasmService,modelMapper, s3);
+        orgasm.setTitle("validTitle");
+        orgasm.setVideoUrl("validUrl");
+        orgasm.setPending(false);
 
     }
 
+    @AfterEach
+    public void clear(){
+        userRepository.deleteAll();
+        orgasmRepository.deleteAll();
+    }
+
+    //Create Start
 //    @Test
-//    public void addOrgasm_whenValid_ShouldReturnInfoModelWithStatusCodeCreated(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        orgasm.setVideoUrl("v");
-//        orgasm.setTitle("v");
+//    @WithMockUser(username = "validUser",roles = {"USER"})
+//    public void createOrgasm_shouldReturnOk_whenOk() throws Exception {
 //
-//        ResponseEntity<InfoModel> model =orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//
-//        Assert.assertEquals(HttpStatus.CREATED,model.getStatusCode());
-//    }
-//
-//
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenInvalidTitle_ShouldThrowException(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        orgasm.setVideoUrl("valid_url");
-//        orgasm.setTitle("   ");
-//      orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//
-//
-//    }
-//
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenInvalidVideoUrl_ShouldThrowException(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        orgasm.setVideoUrl("   ");
-//        orgasm.setTitle("validTitle");
-//        orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//    }
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenVideoUrlIsNull_ShouldThrowException(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        orgasm.setTitle("validTitle");
-//        orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//    }
-//
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenTitleIsNull_ShouldThrowExcepiton(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        orgasm.setVideoUrl("   ");
-//        orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//    }
-//
-//    @Test(expected = UsernameNotFoundException.class)
-//    public void addOrgasm_whenUserDoesntExist_ShouldThrowExcepiton(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        when(userRepository.findByUsername("peshoo")).thenThrow(new UsernameNotFoundException(""));
-//        orgasm.setVideoUrl("v");
-//        orgasm.setTitle("v");
-//        orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//    }
-//
-//
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenOrgasmAlreadyExist_ShouldThrowExcepiton(){
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        orgasm.setVideoUrl("v");
-//        orgasm.setTitle("v");
-//        OrgasmBindingModel secondOrgasm =new OrgasmBindingModel();
-//        secondOrgasm.setTitle("v");
-//        secondOrgasm.setVideoUrl("va");
-//
-//        when(orgasmRepository.saveAndFlush(any())).thenThrow(new FakeOrgasmException(""));
-//        orgasmController.addOrgasm(orgasm,bindingResult,principal);
-//     Mockito.verify(orgasmRepository).saveAndFlush(any());
-//
-//    }
-//
+//        MockMultipartFile file= new MockMultipartFile("somefile","musica.mp3",);
 
 
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenInvalidVideoUrl_ShouldThrowException(){
-//        orgasm.setVideoUrl("     ");
-//        orgasm.setTitle("valid_title");
-//
-//      orgasmController.addOrgasm(orgasm,bindingResult);
-//
-//
-//    }
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenInvalidImgUrl_ShouldThrowException(){
-//        orgasm.setVideoUrl("valid_url");
-//        orgasm.setTitle("valid_title");
-//
-//     orgasmController.addOrgasm(orgasm,bindingResult);
-//
-//
-//    }
-//    @Test(expected = FakeOrgasmException.class)
-//    public void addOrgasm_whenInvalidTitle_ShouldThrowException(){
-//        orgasm.setVideoUrl("valid");
-//        orgasm.setTitle("     ");
-//
-//      orgasmController.addOrgasm(orgasm,bindingResult);
-//
 
- //   }
+    //Create END
+    //FIND START
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findOrgasm_shouldReturnNotFound_whenDoesntExist() throws Exception {
+
+        mockMvc.perform(get("/orgasm/find/pesho"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findOrgasm_shouldReturnOrgasm_whenValid() throws Exception {
+        orgasmRepository.save(orgasm);
+
+                 mockMvc.perform(get("/orgasm/find/validTitle"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title",is("validTitle")))
+                .andExpect(jsonPath("$.videoUrl",is("validUrl")))
+               .andReturn();
+
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findLiked_shouldReturnLikedOrgasm_whenUserLikedAtleastOne() throws Exception {
+       userRepository.saveAndFlush(user);
+        orgasm.getLikeDislike().put(user.getUsername(),true);
+        Orgasm dislikedOrgasm = new Orgasm();
+        dislikedOrgasm.setPending(false);
+        dislikedOrgasm.setTitle("dislikedOne");
+        dislikedOrgasm.setVideoUrl("url");
+        dislikedOrgasm.getLikeDislike().put(user.getUsername(),false);
+        orgasmRepository.saveAndFlush(orgasm);
+        orgasmRepository.saveAndFlush(dislikedOrgasm);
+        mockMvc.perform(get("/orgasm/find/liked"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title",is(orgasm.getTitle())));
+
+    }
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findDisliked_shouldReturnDislikedOrgasm_whenUserDislikedAtleastOne() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.getLikeDislike().put(user.getUsername(),true);
+        Orgasm dislikedOrgasm = new Orgasm();
+        dislikedOrgasm.setPending(false);
+        dislikedOrgasm.setTitle("dislikedOne");
+        dislikedOrgasm.setVideoUrl("url");
+        dislikedOrgasm.getLikeDislike().put(user.getUsername(),false);
+        orgasmRepository.saveAndFlush(orgasm);
+        orgasmRepository.saveAndFlush(dislikedOrgasm);
+
+        mockMvc.perform(get("/orgasm/find/disliked"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title",is(dislikedOrgasm.getTitle())));
+
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findDisliked_shouldThrowException_whenUserHaventDislikedAny() throws Exception {
+        userRepository.saveAndFlush(user);
+
+        Orgasm dislikedOrgasm = new Orgasm();
+        dislikedOrgasm.setPending(false);
+        dislikedOrgasm.setTitle("dislikedOne");
+        dislikedOrgasm.setVideoUrl("url");
+
+        orgasmRepository.saveAndFlush(orgasm);
+        orgasmRepository.saveAndFlush(dislikedOrgasm);
+
+        mockMvc.perform(get("/orgasm/find/disliked"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.ex",is("Fake Orgasm")));
+
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findLiked_shouldThrowException_whenUserHaventLikedAny() throws Exception {
+        userRepository.saveAndFlush(user);
+
+        Orgasm dislikedOrgasm = new Orgasm();
+        dislikedOrgasm.setPending(false);
+        dislikedOrgasm.setTitle("dislikedOne");
+        dislikedOrgasm.setVideoUrl("url");
+
+        orgasmRepository.saveAndFlush(orgasm);
+        orgasmRepository.saveAndFlush(dislikedOrgasm);
+
+        mockMvc.perform(get("/orgasm/find/liked"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.ex",is("Fake Orgasm")));
+
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findDisliked_shouldThrowException_whenUserDontExist() throws Exception {
+
+        mockMvc.perform(get("/orgasm/find/disliked"))
+                .andExpect(status().isBadRequest())
+                .andExpect(mvcResult -> Assert.assertEquals(mvcResult.getResolvedException().getMessage(),"User not found."));
+
+    }
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findLiked_shouldThrowException_whenUserDontExist() throws Exception {
+
+        mockMvc.perform(get("/orgasm/find/liked"))
+                .andExpect(status().isBadRequest())
+                .andExpect(mvcResult -> Assert.assertEquals(mvcResult.getResolvedException().getMessage(),"User not found."));
+
+    }
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findALlUserLikedOrgasms_shouldReturnAllLiked_whenValid() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.getLikeDislike().put(user.getUsername(),true);
+        Orgasm liked = new Orgasm();
+        liked.setPending(false);
+        liked.setTitle("liked");
+        liked.setVideoUrl("url");
+        liked.getLikeDislike().put(user.getUsername(),true);
+        Orgasm dislikedOrgasm = new Orgasm();
+        dislikedOrgasm.getLikeDislike().put(user.getUsername(),false);
+        dislikedOrgasm.setPending(false);
+        dislikedOrgasm.setTitle("dislikedOne");
+        dislikedOrgasm.setVideoUrl("url2");
+
+        orgasmRepository.saveAll(Arrays.asList(orgasm,liked,dislikedOrgasm));
+
+        mockMvc.perform(get("/orgasm/find/users/all-liked"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title",is(orgasm.getTitle())))
+                .andExpect(jsonPath("$[1].title",is(liked.getTitle())))
+                .andReturn();
+
+
+    }
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findALlUserDislikedOrgasms_shouldReturnAllDisliked_whenValid() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.getLikeDislike().put(user.getUsername(),true);
+        Orgasm liked = new Orgasm();
+        liked.setPending(false);
+        liked.setTitle("liked");
+        liked.setVideoUrl("url");
+        liked.getLikeDislike().put(user.getUsername(),true);
+        Orgasm dislikedOrgasm = new Orgasm();
+        dislikedOrgasm.getLikeDislike().put(user.getUsername(),false);
+        dislikedOrgasm.setPending(false);
+        dislikedOrgasm.setTitle("dislikedOne");
+        dislikedOrgasm.setVideoUrl("url2");
+
+        orgasmRepository.saveAll(Arrays.asList(orgasm,liked,dislikedOrgasm));
+
+        mockMvc.perform(get("/orgasm/find/users/all-disliked"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title",is(dislikedOrgasm.getTitle())));
+
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void findAllOwn_shouldReturnAllOrgasmCreatedByTheUser() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        Orgasm orgasm2=new Orgasm();
+        orgasm2.setTitle("valid");
+        orgasm2.setPending(false);
+        orgasm2.setVideoUrl("videoUrl");
+        orgasm2.setUser(user);
+        orgasmRepository.saveAll(Arrays.asList(orgasm,orgasm2));
+
+        mockMvc.perform(get("/orgasm/find/users/all-own"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title",is(orgasm.getTitle())))
+                .andExpect(jsonPath("$[1].title",is(orgasm2.getTitle())))
+                ;
+    }
+    //FIND END
+
+    //Like START
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void likeOrgasm_shouldLike_whenValid() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        orgasmRepository.saveAndFlush(orgasm);
+
+        mockMvc.perform(put("/orgasm/like/validTitle"))
+        .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void likeOrgasm_shouldReturnNotFound_whenOrgasmDoesntExist() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        orgasmRepository.saveAndFlush(orgasm);
+
+        mockMvc.perform(put("/orgasm/like/invalidTitle"))
+                .andExpect(status().isNotFound())
+                .andExpect(mvcResult -> Assert.assertTrue(mvcResult.getResolvedException() instanceof FakeOrgasmException));
+    }
+
+    @Test
+    @WithMockUser(username = "invalidUser",roles = {"USER"})
+    public void likeOrgasm_shouldReturnBadRequest_whenUserDoesntExist() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        orgasmRepository.saveAndFlush(orgasm);
+
+        mockMvc.perform(put("/orgasm/like/validTitle"))
+                .andExpect(status().isBadRequest())
+                .andExpect(mvcResult -> Assert.assertTrue(mvcResult.getResolvedException() instanceof UsernameNotFoundException));
+    }
+
+    //Like END
+
+    //Dislike Start
+
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void dislikeOrgasm_shouldLike_whenValid() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        orgasmRepository.saveAndFlush(orgasm);
+
+        mockMvc.perform(put("/orgasm/dislike/validTitle"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void dislikeOrgasm_shouldReturnNotFound_whenOrgasmDoesntExist() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        orgasmRepository.saveAndFlush(orgasm);
+
+        mockMvc.perform(put("/orgasm/dislike/invalidTitle"))
+                .andExpect(status().isNotFound())
+                .andExpect(mvcResult -> Assert.assertTrue(mvcResult.getResolvedException() instanceof FakeOrgasmException));
+    }
+
+    @Test
+    @WithMockUser(username = "invalidUser",roles = {"USER"})
+    public void dislikeOrgasm_shouldReturnBadRequest_whenUserDoesntExist() throws Exception {
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(user);
+        orgasmRepository.saveAndFlush(orgasm);
+
+        mockMvc.perform(put("/orgasm/dislike/validTitle"))
+                .andExpect(status().isBadRequest())
+                .andExpect(mvcResult -> Assert.assertTrue(mvcResult.getResolvedException() instanceof UsernameNotFoundException));
+    }
+
+    //DislikeEnd
+
+    //DELETE OWN START
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void deleteOwn_whenUserDoesntExist_shouldThrowUsernameNotFoundException() throws Exception {
+
+        mockMvc.perform(delete("/orgasm/delete/own/invalidUser"))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assert.assertTrue(result.getResolvedException() instanceof UsernameNotFoundException));
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void deleteOwn_whenOrgasmDoesntExist_shouldThrowFakeOrgasmException() throws Exception {
+
+        userRepository.saveAndFlush(user);
+
+        mockMvc.perform(delete("/orgasm/delete/own/invalidOrgasm"))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> Assert.assertTrue(result.getResolvedException() instanceof FakeOrgasmException));
+    }
+
+    @Test
+    @WithMockUser(username = "validUser",roles = {"USER"})
+    public void deleteOwn_shouldDelete_succOrgasm() throws Exception {
+
+        userRepository.saveAndFlush(user);
+        orgasm.setUser(this.user);
+        orgasmRepository.save(orgasm);
+        mockMvc.perform(delete("/orgasm/delete/own/validTitle"))
+                .andExpect(status().isOk());
+        Assert.assertEquals(0, orgasmRepository.count());
+    }
+
+    //DELETE OWN END
+
+
+
+
 }

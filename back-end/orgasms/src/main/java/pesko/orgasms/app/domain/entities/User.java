@@ -3,6 +3,7 @@ package pesko.orgasms.app.domain.entities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,8 +21,10 @@ import java.util.Set;
 public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true,nullable = false)
+    @Length(min = 6)
     private String username;
     @Column(nullable = false)
+    @Length(min = 6)
     private String password;
 
     @ToString.Exclude

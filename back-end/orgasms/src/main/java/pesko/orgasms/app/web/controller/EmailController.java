@@ -2,16 +2,19 @@ package pesko.orgasms.app.web.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pesko.orgasms.app.domain.models.binding.EmailBindingModel;
+import pesko.orgasms.app.domain.models.error.ErrorInfo;
 import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.domain.models.service.EmailServiceModel;
+import pesko.orgasms.app.exceptions.InvalidEmailException;
 import pesko.orgasms.app.service.EmailService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/mail")
@@ -28,12 +31,22 @@ public class EmailController {
 
 
     @PostMapping("/send")
-    public ResponseEntity<InfoModel> sendEmail(@RequestBody  EmailBindingModel emailBindingModel){
+    public ResponseEntity<InfoModel> sendEmail(@Valid @RequestBody  EmailBindingModel emailBindingModel,BindingResult bindingResult){
 
+        if(bindingResult.hasErrors()){
+          throw new InvalidEmailException("");
+        }
 
         emailService.sendSimpleMessage(this.modelMapper.map(emailBindingModel, EmailServiceModel.class));
 
 
         return ResponseEntity.ok().body(new InfoModel("Email received"));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidEmailException.class)
+    public ErrorInfo invalidEmail(HttpServletRequest request,InvalidEmailException ex){
+
+        return new ErrorInfo(request.getRequestURI(),ex);
     }
 }

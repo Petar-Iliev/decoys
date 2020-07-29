@@ -113,9 +113,9 @@ public class OrgasmServiceImpl implements OrgasmService {
     }
 
     @Override
-    public OrgasmServiceModel likeOrgasm(OrgasmServiceModel orgasmServiceModel, String username) {
+    public OrgasmServiceModel likeOrgasm(String title, String username) {
         this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
-        Orgasm orgasm = this.orgasmRepository.findByTitle(orgasmServiceModel.getTitle()).orElseThrow(() -> new FakeOrgasmException(ORGASM_DOESNT_EXIST));
+        Orgasm orgasm = this.orgasmRepository.findByTitle(title).orElseThrow(() -> new FakeOrgasmException(ORGASM_DOESNT_EXIST));
 
         orgasm.getLikeDislike().put(username, true);
 
@@ -125,9 +125,9 @@ public class OrgasmServiceImpl implements OrgasmService {
     }
 
     @Override
-    public OrgasmServiceModel dislikeOrgasm(OrgasmServiceModel orgasmServiceModel, String username) {
+    public OrgasmServiceModel dislikeOrgasm(String title, String username) {
         User user = this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
-        Orgasm orgasm = this.orgasmRepository.findByTitle(orgasmServiceModel.getTitle()).orElseThrow(() -> new FakeOrgasmException(ORGASM_DOESNT_EXIST));
+        Orgasm orgasm = this.orgasmRepository.findByTitle(title).orElseThrow(() -> new FakeOrgasmException(ORGASM_DOESNT_EXIST));
 
 
         orgasm.getLikeDislike().put(username, false);
@@ -223,6 +223,8 @@ public class OrgasmServiceImpl implements OrgasmService {
 
         return this.randomOrgasm(orgasms);
     }
+
+
 
     private OrgasmServiceModel convertOrgasmToOrgasmServiceModel(Orgasm orgasm) {
         return this.modelMapper.map(orgasm, OrgasmServiceModel.class);

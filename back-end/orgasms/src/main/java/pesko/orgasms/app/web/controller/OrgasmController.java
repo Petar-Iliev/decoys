@@ -40,13 +40,13 @@ public class OrgasmController {
 
     private final OrgasmService orgasmService;
     private final ModelMapper modelMapper;
-    private final AmazonS3 s3;
+
 
     @Autowired
-    public OrgasmController(OrgasmService orgasmService, ModelMapper modelMapper, AmazonS3 s3) {
+    public OrgasmController(OrgasmService orgasmService, ModelMapper modelMapper) {
         this.orgasmService = orgasmService;
         this.modelMapper = modelMapper;
-        this.s3 = s3;
+
     }
 
     @GetMapping("/find/{title}")
@@ -67,7 +67,8 @@ public class OrgasmController {
 
     @PostMapping(path = "/create/{title}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<OrgasmResponseModel> addOrgasmTest(@RequestBody MultipartFile file, @PathVariable String title, Principal principal) throws IOException {
+    public ResponseEntity<OrgasmResponseModel> addOrgasmTest(@RequestBody(required = true) MultipartFile file
+            , @PathVariable String title, Principal principal) throws IOException {
 
         String type = file.getContentType();
         if(!this.isMimeTypeValid(type)){
@@ -79,33 +80,26 @@ public class OrgasmController {
         return ResponseEntity.status(201).body(this.modelMapper.map(orgasmService, OrgasmResponseModel.class));
     }
 
-    @GetMapping("/test/delete/{title}")
-    public InfoModel deleteS(@PathVariable String title) {
-
-        String bucketName = s3.listBuckets().get(0).getName();
-
-        s3.deleteObject(bucketName, "/videos/pesho/" + title);
-
-        return new InfoModel("deleted");
-    }
 
 
-    @PutMapping("/like")
+
+    @PutMapping("/like/{title}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> likeOrgasm(@RequestBody OrgasmBindingModel orgasmBindingModel, Principal principal) {
+    public ResponseEntity<String> likeOrgasm(@PathVariable String title, Principal principal) {
 
-        OrgasmServiceModel orgasmServiceModel = this.modelMapper.map(orgasmBindingModel, OrgasmServiceModel.class);
-        this.orgasmService.likeOrgasm(orgasmServiceModel, principal.getName());
+
+        this.orgasmService.likeOrgasm(title, principal.getName());
 
         return ResponseEntity.ok("Liked");
     }
 
-    @PutMapping("/dislike")
+    @PutMapping("/dislike/{title}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> dislikeOrgasm(@RequestBody OrgasmBindingModel orgasmBindingModel, Principal principal) {
+    public ResponseEntity<String> dislikeOrgasm(@PathVariable String title, Principal principal) {
 
-        OrgasmServiceModel orgasmServiceModel = this.modelMapper.map(orgasmBindingModel, OrgasmServiceModel.class);
-        this.orgasmService.dislikeOrgasm(orgasmServiceModel, principal.getName());
+
+
+        this.orgasmService.dislikeOrgasm(title, principal.getName());
 
         return ResponseEntity.ok("Disliked");
     }

@@ -40,41 +40,8 @@ import static org.mockito.Mockito.when;
 public class UserControllerTest {
 
 
-//    @Autowired
-//    UserService userService;
-//
-//    @Autowired
-//    ModelMapper modelMapper;
-//
-//    @MockBean
-//    BindingResult bindingResult;
-//
-//    @MockBean
-//    UserRepository userRepository;
-
     @Autowired
     UserController userController;
-
-
-//    @Autowired
-//    RoleService roleRepository;
-//
-//    List<User> users;
-//
-//    User user;
-
-//    @Before
-//    public void init(){
-//       users=new ArrayList<>();
-//       user=new User();
-//        user.setUsername("valid_username");
-//        user.setPassword("valid_password");
-//       userController=new UserController(userService,modelMapper);
-//
-//       when(userRepository.findAll()).thenReturn(users);
-//       when(userRepository.save(any())).thenReturn(user);
-//       when(bindingResult.hasErrors()).thenReturn(true);
-//    }
 
 
     @Test
@@ -129,54 +96,4 @@ public class UserControllerTest {
 
 
 
-//    @Test
-//    public void register_whenCorrect_UserViewModel(){
-//
-//        when(bindingResult.hasErrors()).thenReturn(false);
-//        UserBindingModel userViewModel=new UserBindingModel();
-//        userViewModel.setUsername("valid_username");
-//        userViewModel.setPassword("valid_password");
-//        userViewModel.setRepeatPassword("valid_password");
-//
-//       UserBindingModel saved= userController.register(userViewModel,bindingResult);
-//
-//        Assert.assertEquals(saved.getUsername(),"valid_username");
-//        Assert.assertEquals(saved.getPassword(),"valid_password");
-//        Assert.assertEquals(saved.getRepeatPassword(),null);
-//    }
-
-//    @Test(expected = InvalidUserException.class)
-//    public void register_whenIncorectUsername_shouldThrowException(){
-//
-//
-//        UserBindingModel userViewModel=new UserBindingModel();
-//        userViewModel.setUsername("va");
-//        userViewModel.setPassword("valid_password");
-//        userViewModel.setRepeatPassword("valid_password");
-//
-//      userController.register(userViewModel,bindingResult);
-//
-//    }
-//    @Test(expected = InvalidUserException.class)
-//    public void register_whenIncorectPassword_shouldThrowException(){
-//
-//        UserBindingModel userViewModel=new UserBindingModel();
-//        userViewModel.setUsername("val");
-//        userViewModel.setPassword("inval");
-//        userViewModel.setRepeatPassword("inval");
-//
-//        userController.register(userViewModel,bindingResult);
-//
-//    }
-//    @Test(expected = InvalidUserException.class)
-//    public void register_whenPasswordsNotMatching_shouldThrowException(){
-//
-//        UserBindingModel userViewModel=new UserBindingModel();
-//        userViewModel.setUsername("valid");
-//        userViewModel.setPassword("valid_password");
-//        userViewModel.setRepeatPassword("password_valid");
-//
-//        userController.register(userViewModel,bindingResult);
-//
-//    }
 }

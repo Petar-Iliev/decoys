@@ -11,7 +11,7 @@ public class OrgasmResponseModel {
     private Long id;
 
     private String title;
-    
+
     private String videoUrl;
 
     private boolean pending;

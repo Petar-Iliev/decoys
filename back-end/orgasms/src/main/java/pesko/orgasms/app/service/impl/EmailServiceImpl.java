@@ -28,10 +28,12 @@ public class EmailServiceImpl implements EmailService {
         }
         SimpleMailMessage message=new SimpleMailMessage();
 
+
+
         message.setFrom(email.getFrom());
         message.setTo("decoybank@gmail.com");
         message.setSubject(email.getSubject());
-        message.setText(email.getText());
+        message.setText(String.format("%s - %s",message.getFrom(),email.getText()));
         javaMailSender.send(message);
     }
 }
