@@ -67,7 +67,7 @@ public class OrgasmController {
 
     @PostMapping(path = "/create/{title}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<OrgasmResponseModel> addOrgasmTest(@RequestBody(required = true) MultipartFile file
+    public ResponseEntity<OrgasmResponseModel> addOrgasm(@RequestBody(required = true) MultipartFile file
             , @PathVariable String title, Principal principal) throws IOException {
 
         String type = file.getContentType();

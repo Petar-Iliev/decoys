@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pesko.orgasms.app.domain.entities.Event;
 import pesko.orgasms.app.domain.models.service.EventServiceModel;
 import pesko.orgasms.app.exceptions.InvalidEventException;
+import pesko.orgasms.app.global.GlobalExceptionMessageConstants;
 import pesko.orgasms.app.repository.EventRepository;
 import pesko.orgasms.app.service.EventService;
 import pesko.orgasms.app.utils.ValidatorUtil;
@@ -70,6 +71,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteEvent(Long eventId) {
 
-        this.eventRepository.deleteById(eventId);
+        Event event = eventRepository.findById(eventId).orElseThrow(()-> new IllegalArgumentException(GlobalExceptionMessageConstants.INVALID_PROPS));
+        this.eventRepository.deleteById(event.getId());
     }
 }

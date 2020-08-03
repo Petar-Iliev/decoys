@@ -12,14 +12,11 @@ import {ReactComponent as TerminalSVG} from '../main/svgs/command-line.svg';
 import {ReactComponent as DesktopSVG} from '../main/svgs/desktop.svg';
 
 class Admin extends React.Component{
-
-
     constructor(props){
         super(props)
         this.state={
             valid:false,
             title:"",
-          
             video:"",
             videoUrl:"",
             uploadUrl:"",
@@ -35,35 +32,24 @@ class Admin extends React.Component{
             validUsr:false
             
         }
-   
     
-
-     
          this.videoRef=createRef();
-      
-     
-      
-     
+
         this.handleName=this.handleName.bind(this);
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleVideo=this.handleVideo.bind(this);
         this.handleOrgasmTitle=this.handleOrgasmTitle.bind(this);
         this.handleOrgasmFile=this.handleOrgasmFile.bind(this);       
-
         this.handleDesktop=this.handleDesktop.bind(this);
-        this.handleTerminal=this.handleTerminal.bind(this);
-
-      
+        this.handleTerminal=this.handleTerminal.bind(this);      
         this.uploadBackup=this.uploadBackup.bind(this);
-
-
         this.findUser=this.findUser.bind(this);
         this.findOrgasm=this.findOrgasm.bind(this);
         this.setUserRole=this.setUserRole.bind(this);
         this.deleteType=this.deleteType.bind(this);
-    
         this.setPending=this.setPending.bind(this);
         this.addOrgasm=this.addOrgasm.bind(this);
+        this.makeRequest=this.makeRequest.bind(this);
     }
 
     componentDidMount(){
@@ -112,18 +98,26 @@ class Admin extends React.Component{
         .catch(err=>{
             console.error(err);
         })
-    
-
         const file= await res.json();
-
         this.setState({
             videoUrl:file.secure_url,
-            
         })
- 
     }
 
-   
+   async makeRequest(url,methodType,data,contentType){
+
+       return await fetch(url,{
+            method:methodType,
+            headers:{
+                "Authorization":Cookies.get("token"),
+                "Content-Type":contentType
+            },
+            body:data
+        })
+        .then(resp=>resp.json());
+       
+    }
+
     handleVideo(e){
         
         this.setState({
@@ -135,25 +129,15 @@ class Admin extends React.Component{
     
         this.setState({title: event.target.value});
     }
-  
- 
-  
-
-
    async handleSubmit(e){
       
            if(this.state.title==="" || this.state.video===""){
                return "Invalid Props"
            }
 
-        const videoType=this.state.video[0].type;
-       
-           if(videoType!=="audio/mpeg" && videoType!=="video/mp4"){
-                  return "Invalid MIME TYPE";
-           }
         const files=this.state.video;
         const data=new FormData();
-        data.append("file",files[0]);
+         data.append("file",files[0]);
 
       return  await fetch(`http://localhost:8050/orgasm/create/${this.state.title}`,{
             method:"POST",
@@ -164,7 +148,7 @@ class Admin extends React.Component{
         })
         .then(resp=>resp.json())
         .then(data=>{
-     
+
             if(data.ex){
                 return data.ex;
             }
@@ -172,6 +156,7 @@ class Admin extends React.Component{
         })
         .catch(err=>{
             console.error(err);
+           return "FILE SIZE TOO BIG";
         })
          
     }
@@ -189,40 +174,14 @@ class Admin extends React.Component{
 
    async findUser(name){
        
-        const result= await fetch(`http://localhost:8050/admin/find/user/${name}`,{
-            method:"GET",
-            headers:{
-                "Authorization":Cookies.get("token")
-            }
-        })
-        .then(resp=>resp.json())
-        .then(data=>{
-           if(!data.ex){
-                this.setState({listRole:data.authorities,listOrg:data.orgasms,username:data.username,validUsr:true})     
-           }else{
-            this.setState({listRole:[],listOrg:[],username:"",validUsr:false})
-           }
-            return data;
-        })
-        .catch(err=>{
-            console.error(err);
-        })
-
-
-        return result;
+        const url =`http://localhost:8050/admin/find/user/${name}`
+       return await this.makeRequest(url);
        
     }
 
     async findOrgasm(title){
-
-      return await fetch(`http://localhost:8050/admin/find/orgasm/${title}`,{
-            method:"GET",
-            headers:{
-                "Authorization":Cookies.get("token")
-            }
-        })
-        .then(resp=>resp.json())
-        .catch(err=>console.error(err));
+        const url=`http://localhost:8050/admin/find/orgasm/${title}`;
+       return await this.makeRequest(url);
     }
   
 
@@ -231,55 +190,19 @@ class Admin extends React.Component{
         if(!validRoles.includes(role)){
             return "INVALID ROLE";
         }
+        const url ="http://localhost:8050/admin/set-role";
+        const method="PUT";
+        const contentType="application/json";
+        const body=JSON.stringify({username,role});
 
-       const res= await fetch("http://localhost:8050/admin/set-role",{
-             method:"PUT",
-             headers:{
-                 "Authorization":Cookies.get("token"),
-                 "Content-Type":"application/json"
-             },
-             body:JSON.stringify({username,role})
-         }).then(resp=>resp.json())
-         .then(data=>{
-            
-           
-            if(data.ex){
-            return "Invalid User"
-            }
-            this.setState({listRole:data.authorities})
-        })
-         .catch(err=>{
-             console.log(err);
-         })
-
-         return res;
+      return  await this.makeRequest(url,method,body,contentType)
+      
     }
 
     async deleteType(type,name){
-        
-     const res=await fetch(`http://localhost:8050/admin/delete/${type}?name=${name}`,{
-            method:"DELETE",
-            headers:{
-                "Authorization":Cookies.get("token")
-            }
-        })
-        .then(resp=>{
-            if(resp.status>399){
-                return `Invalid ${type}`;
-            }
-            if(type==="orgasm"){
-                let tempLOrg=this.state.listOrg.filter(e=>e.title!==name);
-                this.setState({listOrg:tempLOrg})
-            }else{
-               this.setState({listOrg:[],listRole:[],username:"",userid:""})
-            }      
-            return `Successfully deleted ${type}`
-        })
-        .catch(err=>{
-            console.log(err);
-        });
+       const url =`http://localhost:8050/admin/delete/${type}?name=${name}`;
+      return await this.makeRequest(url,"DELETE");
 
-        return res;
     }
 
     async handleVideo(){
@@ -300,7 +223,7 @@ class Admin extends React.Component{
      
        await this.videoRef.current.click();
   
-       console.log(this.videoRef.current.files);
+       
 
         this.setState({title:titlee});
      return "Loading..."
@@ -308,35 +231,10 @@ class Admin extends React.Component{
 
     async setPending(title){
 
-      const res= await  fetch(`http://localhost:8050/admin/modi/pending?title=${title}`,{
-            method:"PUT",
-            headers:{
-                "Authorization":Cookies.get("token")
-            }
-        })
-        .then(e=>e.json())
-        .then(data=>{
-          
-        if(data.error){
-            return "Invalid Orgasm";
-        }
-            let orgs=[...this.state.listOrg];
-            let inx=this.state.listOrg.map(function(e){
-                return e.title;
-            }).indexOf(title);
-
-            let org=orgs[inx];
-            org.pending= data.pending;
-            orgs[inx]=org;   
-            this.setState({listOrg:orgs});
-         
-            return "Modified"
-        })
-        .catch(err=>{
-            console.error(err);
-        })
-
-        return res;
+        const url =`http://localhost:8050/admin/modi/pending?title=${title}`;
+        const method="PUT";
+        return await this.makeRequest(url,method);
+   
     }
 
   

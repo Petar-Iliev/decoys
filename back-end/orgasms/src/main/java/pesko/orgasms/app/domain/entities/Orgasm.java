@@ -30,10 +30,10 @@ public class Orgasm extends BaseEntity{
 //    @JoinTable(name = "users_orgasms",joinColumns = @JoinColumn(name = "orgasm_id",referencedColumnName = "id"),
 //            inverseJoinColumns =@JoinColumn(name = "user_id" ,referencedColumnName = "id") )
 
-    @ManyToOne(targetEntity = User.class,fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class,fetch = FetchType.LAZY)
     private User user;
 
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
    private Map<String,Boolean>likeDislike = new HashMap<>();
 
 

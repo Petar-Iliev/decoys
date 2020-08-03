@@ -11,6 +11,7 @@ import pesko.orgasms.app.domain.models.error.ErrorInfo;
 import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.domain.models.service.EmailServiceModel;
 import pesko.orgasms.app.exceptions.InvalidEmailException;
+import pesko.orgasms.app.global.GlobalExceptionMessageConstants;
 import pesko.orgasms.app.service.EmailService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public class EmailController {
     public ResponseEntity<InfoModel> sendEmail(@Valid @RequestBody  EmailBindingModel emailBindingModel,BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
-          throw new InvalidEmailException("");
+          throw new InvalidEmailException(GlobalExceptionMessageConstants.INVALID_EMAIL_REQUEST);
         }
 
         emailService.sendSimpleMessage(this.modelMapper.map(emailBindingModel, EmailServiceModel.class));

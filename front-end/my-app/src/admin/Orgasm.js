@@ -17,15 +17,25 @@ function Orgasm(props){
     }
  
  
+    if(!props.title){
+       return <></>
+    }
     return(
         <>
       <div className="inf-desk-hold">
-      <span className="org-title-desk"> Title:{props.title}</span> <span className={props.pending.toString()==="true" ? "pending true" : "pending false"} onClick={()=>{
+    <span className="org-title-desk"> 
+    Title:{props.title}</span> <span className={props.pending.toString()==="true" ? "pending true" : "pending false"} onClick={(e)=>{
         props.setPending(props.title)
-      }}>Pending:{props.pending.toString()}</span> 
+        // const target = e.target;
+        // const className= target.className;
+        // target.className = className === "pending true" ? "pending false" : "pending true";
+        // target.innerHTML = className === "pending true" ? "Pending: false" : "Pending: true";
+      }}>Pending:{props.pending.toString()}
+      </span> 
        <Cassette onClick={playMe}/> <audio ref={audioRef} id="aud" src={props.videoUrl}></audio> 
-       <div className="desk-delete-org" onClick={()=>props.delete("orgasm",props.title)}>DELETE</div>
+       <div className="desk-delete-org" onClick={()=>props.delete(props.title,"orgasm")}>DELETE</div>
      
+    
        </div>
     </>
     )

@@ -8,6 +8,7 @@ import {ReactComponent as Panties} from '../main/svgs/panties.svg'
 
 import {ReactComponent as PiggyBank} from '../main/svgs/piggybank.svg'
 import {ReactComponent as Smartphone} from '../main/svgs/smartphone.svg'
+import {ReactComponent as Admin} from '../main/svgs/laptop.svg';
 
 
 import {
@@ -23,15 +24,12 @@ import {log} from '../actions/index.js';
 
 
 
-const Header =()=>{
 
+const Header =()=>{
+  const [isAdmin,setIsAdmin] = useState(false);
   const logged=useSelector(state=>state.log)
   const dispatcher=useDispatch();
   
-
-
-    
- 
     function logOut(){
       if(logged){
 
@@ -46,8 +44,9 @@ const Header =()=>{
           body:JSON.stringify(data)
       });
   
-
-        dispatcher(log())
+        setIsAdmin(false);
+        dispatcher(log());
+     
       Cookies.remove("token");
       localStorage.clear();
 
@@ -55,6 +54,20 @@ const Header =()=>{
     }
   }
 
+ async function adminCheck(){
+   await fetch("http://localhost:8050/admin/check",{
+      headers:{
+        "Authorization":Cookies.get("token")
+      }
+    }).then(resp=>{
+     
+      if(resp.status===200){
+        setIsAdmin(true);
+      }
+ 
+    }).catch(err=>console.error(err))
+
+  }
   
     function Profile(props){
 
@@ -69,22 +82,7 @@ const Header =()=>{
       {props.icon}
       </Link>
       <CSSTransition in={open} timeout={500} unmountOnExit classNames="my-node">
-        {/* <DropdownMenu/> */}
-        <div className="drop-down">
-           <Link to="/user/orgasms" className="prof-cont" onClick={()=>setOpen(!open)}>
-            <span className="drop-title">Your Orgasms</span>
-          {<Panties className="prof-svg"/>}
-            </Link>
-            <Link to="/contact" className="prof-cont" onClick={()=>setOpen(!open)}>
-            <span className="drop-title">Contact us</span>
-          {<Smartphone className="prof-svg"/>}
-            </Link>
-              <Link to="/donate" className="prof-cont" onClick={()=>setOpen(!open)}>
-        <span className="drop-title">Donate</span>
-        {<PiggyBank className="prof-svg"/>}
-            </Link>
-          
-        </div>
+        <DropdownMenu close={()=>setOpen(!open)}/>
         </CSSTransition> 
         </li>
 
@@ -97,19 +95,22 @@ const Header =()=>{
       return(
       
           <div className="drop-down">
-           <Link to="/orgasms" className="prof-cont">
+           <Link to="/user/orgasms" className="prof-cont" onClick={props.close}>
             <span className="drop-title">Your Orgasms</span>
           {<Panties className="prof-svg"/>}
             </Link>
-            <Link to="/about" className="prof-cont">
+            <Link to="/contact" className="prof-cont" onClick={props.close}>
             <span className="drop-title">Contact us</span>
           {<Smartphone className="prof-svg"/>}
             </Link>
-              <Link to="/donate" className="prof-cont">
+              <Link to="/donate" className="prof-cont" onClick={props.close}>
         <span className="drop-title">Donate</span>
         {<PiggyBank className="prof-svg"/>}
             </Link>
-      
+           {isAdmin &&  <Link to="/admin" className="prof-cont" onClick={props.close}>
+        <span className="drop-title">Admin</span>
+        {<Admin className="prof-svg"/>}
+            </Link>}
           
         </div>
      
@@ -122,6 +123,7 @@ const Header =()=>{
       
         if(logged){
 
+          adminCheck();
             return(
               <>
                 <header>
@@ -134,7 +136,8 @@ const Header =()=>{
                   
                      </Profile>
                     <Link to="/orgasms" className="item six">ORGASMS</Link>
-                    <Link to="/" onClick={logOut} className="item seven">Logout</Link>
+                    
+                    <Link to="/" onClick={logOut} className="item seven">LOGOUT</Link>
         
                   </ul>
                 </nav>
@@ -152,10 +155,10 @@ const Header =()=>{
       <ul className="container">
         <Link to="/" className="item one">LOGO</Link>
       
-        <Link to="/" className="item two">HOME</Link>
+        <Link to="/contact" className="item two">CONTACT</Link>
         <Link to="/about" className="item three">ABOUT</Link>
-        <Link to="/login" className="item four">Login</Link>
-        <Link to='/register' className='item five'>Register</Link>
+        <Link to="/login" className="item four">LOGIN</Link>
+        <Link to='/register' className='item five'>REGISTER</Link>
       </ul>
     </nav>
     

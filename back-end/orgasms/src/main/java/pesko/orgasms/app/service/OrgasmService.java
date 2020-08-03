@@ -18,6 +18,7 @@ public interface OrgasmService {
 
 
     void deleteOrgasm(String title);
+    void deleteOwnOrgasm(String title,String username);
 
     OrgasmServiceModel likeOrgasm(String orgasmTitle, String username);
     OrgasmServiceModel dislikeOrgasm(String orgasmTitle,String username);
@@ -26,7 +27,7 @@ public interface OrgasmService {
     List<OrgasmServiceModel>findAllUsersOrgasms(String username);
     List<OrgasmServiceModel>findAllUsersLikedOrgasms(String username);
     List<OrgasmServiceModel>findALlUsersDislikedOrgasms(String username);
-    void deleteOwnOrgasm(String title,String username);
+
 
     OrgasmServiceModel modifyPending(String title);
     OrgasmServiceModel findByTitle(String title);

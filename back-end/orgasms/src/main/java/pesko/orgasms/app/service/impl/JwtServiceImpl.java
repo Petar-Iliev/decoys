@@ -38,7 +38,7 @@ public class JwtServiceImpl implements JwtService {
 
         forSave.setToken(token);
         forSave.setCreatedOn(Date.valueOf(LocalDate.now()));
-        forSave.setExpiresOn(Date.valueOf(LocalDate.now().plusDays(1)));
+        forSave.setExpiresOn(Date.valueOf(LocalDate.now().plusDays(2)));
         this.jwtRepository.save(forSave);
     }
 

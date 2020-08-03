@@ -15,6 +15,7 @@ public class EmailBindingModel {
 
 
 
+    @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     private String from;
     private String subject;
     @Length(min = 2)

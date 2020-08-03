@@ -15,8 +15,8 @@ function  Terminal(props) {
 
   function help(){
        
-        return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [username] [role {ADMIN,GUEST,USER}]\n\n
- setPending [orgasmTitle] - toggle pending state of an Orgasm
+        return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [role {ADMIN,GUEST,USER}] [username]\n\n
+ setPending [orgasmTitle] - toggle pending state of an Orgasm\n\n findO [name] - find Orgasm by name\n\n findU [username] - find User by username\n
         \n setOrgasmTitle [title] \n\n setOrgasmFile (Choose File Audio/Video)\n\n submit - creates Orgasm AFTER ALL PROPS ARE FILLED (Title & File)\n\n `
     }
     
@@ -60,21 +60,27 @@ function  Terminal(props) {
 
             case "Duser":
                   name=trimmedCommand.slice(6);
-                 retMsg=await props.methods.delete("user",name);
+                 data=await props.methods.delete("user",name);
+                 data.msg ? retMsg=data.msg : retMsg=data.ex
                 break;
             case "Dorgasm":
                 name=trimmedCommand.slice(8);
-                retMsg=await props.methods.delete("orgasm",name);
+                data=await props.methods.delete("orgasm",name);
+                data.msg ? retMsg=data.msg : retMsg=data.ex
                 break;
             case "setRole":
                     let role= input[1];
                     let pos= trimmedCommand.indexOf(role);
+
                     name=trimmedCommand.slice(pos+role.length+1);
-                    retMsg=await props.methods.setRole(name,role);
+               
+                    data=await props.methods.setRole(name,role);
+                    data.id ? retMsg="Modified" : retMsg=data.ex
                 break;
             case "setPending":
                   name=trimmedCommand.replace(cmd+" ","");
-                retMsg= await props.methods.setPending(name);
+               data = await props.methods.setPending(name);
+               data.id ? retMsg=`Pending: ${data.pending}`: retMsg=data.ex
                
                 
             break;

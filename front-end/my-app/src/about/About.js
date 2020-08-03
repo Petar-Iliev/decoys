@@ -13,7 +13,7 @@ const About = () =>{
              Found voice actors which have experienced orgasms on their own.<br/>
 Hired biggest orgasmologist on the planet Dr. P.I.I.<br/>
 
-<img alt="Picture of doctor P.I.I" src={img} className="pesho-pic"/> <br/>
+<img alt="Dr. P.I.I" src={img} className="pesho-pic"/> <br/>
 
  </p>
 
@@ -23,7 +23,7 @@ We spent our free time searching for the next orgasm.<br/>
 Went to every single bar , disco ,fast food resturant,lightless street , church , shared taxi lifts just to find the next muse,<br/>
 just to deliver next wet slappy Orgasm.<br/>
 </p>
-<p>CONTACT US   +359877513153</p>
+{/* <p>CONTACT US   +359877513153</p> */}
             </div>
         </div>
     )

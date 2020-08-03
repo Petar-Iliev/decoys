@@ -1472,6 +1472,9 @@ body{
 }
   @media screen and (max-width: 600px){
   
+    .drop-down{
+      font-size: 15px;
+    }
     .calendar-container{
       left: 1%;
     }
@@ -1549,6 +1552,9 @@ body{
       width: 1fr;
       margin: auto;
     }
+    .item svg{
+      width: 41px;
+    }
     .nav .container{
       align-items: center;
       justify-content: start;
@@ -1603,9 +1609,10 @@ body{
     }
     .buttons{
       top: 40vh;
-     margin-top: 14rem;
+     margin-top: 26rem;
      margin-left: 1rem;
     }
+    
     /* .btn-content{
       width: 65px;
       font-size: 10px;
@@ -1620,11 +1627,12 @@ body{
     }
   
     .icons-wrapper{
-      position: relative;
+      /* position: relative;
       align-items: center;
       justify-content: center;
       top: 17rem;
-      left: 0;
+      left: 0; */
+      display: none;
     }
     .icons-wrapper div{
       margin: 5px;

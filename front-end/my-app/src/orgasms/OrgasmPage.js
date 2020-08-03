@@ -4,7 +4,8 @@ import Cookies from 'js-cookie'
 
 
 import {useSelector} from 'react-redux'
-import {ReactComponent as BlackHeart} from './orgmp/healthy.svg';
+
+import urlC from './orgmp/original.gif';
 import {ReactComponent as QuestionMark} from './orgmp/question.svg';
 import {ReactComponent as Thumb} from './orgmp/like.svg'
 import {ReactComponent as ThumbDown} from './orgmp/dislike.svg'
@@ -56,10 +57,6 @@ import { CSSTransition } from 'react-transition-group'
                  "Authorization":Cookies.get("token")
              }
          })
-         .then(resp=>{
-             console.log(resp);
-             return resp;
-         })
          .then(resp=>resp.json())
          .then(data=>{
             console.log(data.title);
@@ -101,7 +98,6 @@ import { CSSTransition } from 'react-transition-group'
         })
         .then(resp=>resp.json())
         .then(data=>{
-            console.log(data.title);
             if(!data.videoUrl){
                setMsg(notFoundMsgs[1]);
                setMsgIn(true);
@@ -113,7 +109,6 @@ import { CSSTransition } from 'react-transition-group'
             setLikeDislike(true);
             setLike(true);
             setDislike(false);
-
             setMsg("");
             }
         })
@@ -134,13 +129,9 @@ import { CSSTransition } from 'react-transition-group'
                 "Authorization":Cookies.get("token")
             }
         })
-        .then(resp=>{
-            console.log(resp);
-            return resp;
-        })
         .then(resp=>resp.json())
         .then(data=>{
-            console.log(data.title);
+           
             if(!data.videoUrl){
                   setMsg(notFoundMsgs[2])
                   setMsgIn(true);
@@ -173,7 +164,6 @@ import { CSSTransition } from 'react-transition-group'
            headers:{
                "Authorization":Cookies.get("token"),
            },
-          
        })
 
      }
@@ -208,7 +198,9 @@ return(
 
            <div className="orgasm-page-master">
                <CSSTransition in={diskInside} timeout={800} classNames="tape-ani" unmountOnExit={true}>
-               <img src="https://data.whicdn.com/images/293015045/original.gif" className="casset"></img>  
+               
+               {/* <img src="https://data.whicdn.com/images/293015045/original.gif" className="casset"></img>   */}
+               <img src={urlC} className="casset"></img>  
                </CSSTransition>
                <audio src={tapeUrl} ref={tapeRef}></audio>
 

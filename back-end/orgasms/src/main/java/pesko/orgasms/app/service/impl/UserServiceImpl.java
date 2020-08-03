@@ -11,6 +11,7 @@ import pesko.orgasms.app.domain.entities.Roles;
 import pesko.orgasms.app.domain.entities.User;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
+import pesko.orgasms.app.exceptions.InsideJobExceeption;
 import pesko.orgasms.app.exceptions.InvalidUserException;
 import pesko.orgasms.app.exceptions.UserAlreadyExistException;
 import pesko.orgasms.app.global.GlobalExceptionMessageConstants;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserByUsername(String username) {
+    public UserServiceModel deleteUserByUsername(String username) {
 
 
         User user = this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
@@ -76,12 +77,13 @@ public class UserServiceImpl implements UserService {
         this.checkIfRoot(user);
 
         this.userRepository.deleteById(user.getId());
+     return this.modelMapper.map(user,UserServiceModel.class);
     }
 
     @Override
     public UserServiceModel findByUsername(String username) {
         User user = this.userRepository.findByUsername(username).orElse(null);
-        if (user == null) {
+     if (user == null) {
             return null;
         }
         return
@@ -93,7 +95,7 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
-        checkIfRoot(user);
+         checkIfRoot(user);
         user.setRoles(new ArrayList<>());
         UserServiceModel userModel = this.modelMapper.map(user, UserServiceModel.class);
 
@@ -129,7 +131,7 @@ public class UserServiceImpl implements UserService {
     private void checkIfRoot(User user) {
         user.getRoles().forEach(e -> {
             if (e.getAuthority().equals("ROLE_ROOT")) {
-                throw new IllegalArgumentException("Inside Job");
+                throw new InsideJobExceeption("Inside Job");
             }
         });
     }

@@ -103,9 +103,9 @@
 .this-one{
     background-color: #70798C;
 }
-.admin-search{
+/* .admin-search{
     margin-top: 50px;
-}
+} */
 .info-admin{
     position: absolute;
     top: 34%;
@@ -222,3 +222,16 @@ flex-direction: column;
     border-radius: 10px;
 }
 
+.find-user{
+    background-color: teal;
+    padding: 7px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.find-orgasm{
+    background-color: rebeccapurple;
+    padding: 7px;
+    cursor: pointer;
+    border-radius: 10px;
+}

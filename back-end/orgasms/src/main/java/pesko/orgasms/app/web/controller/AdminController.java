@@ -3,12 +3,14 @@ package pesko.orgasms.app.web.controller;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pesko.orgasms.app.domain.models.binding.UserSetRoleBindingModel;
+import pesko.orgasms.app.domain.models.error.ErrorInfo;
 import pesko.orgasms.app.domain.models.info.InfoModel;
 import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
@@ -17,9 +19,11 @@ import pesko.orgasms.app.domain.models.response.AdminUrlViewModel;
 import pesko.orgasms.app.domain.models.response.OrgasmResponseModel;
 import pesko.orgasms.app.domain.models.response.UserInfoResponseModel;
 import pesko.orgasms.app.exceptions.FakeOrgasmException;
+import pesko.orgasms.app.exceptions.InsideJobExceeption;
 import pesko.orgasms.app.service.OrgasmService;
 import pesko.orgasms.app.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
 @RestController
@@ -117,6 +121,19 @@ public class AdminController {
         return ResponseEntity.ok().body(model);
     }
 
+    @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
+    @ExceptionHandler(InsideJobExceeption.class)
+    public ErrorInfo insideJobHandlerException(HttpServletRequest request,InsideJobExceeption ex){
+
+        return new ErrorInfo(request.getRequestURI(),ex);
+    }
+
+    @ExceptionHandler({FakeOrgasmException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorInfo orgasmHandlerException(HttpServletRequest request, FakeOrgasmException ex) {
+
+        return new ErrorInfo(request.getRequestURI(), ex);
+    }
 
 
 }
