@@ -2,6 +2,7 @@ package pesko.orgasms.service;
 
 
 import com.amazonaws.services.s3.AmazonS3;
+import org.checkerframework.checker.nullness.Opt;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import pesko.orgasms.app.utils.ValidatorUtil;
 import pesko.orgasms.app.utils.ValidatorUtilImpl;
 import pesko.orgasms.serviceUtils.OrgasmServiceUtil;
 import pesko.orgasms.serviceUtils.RoleServiceUtil;
+import pesko.orgasms.serviceUtils.UserServiceUtil;
 
 
 import java.util.*;
@@ -85,6 +87,21 @@ public class OrgasmServiceTest {
 
         assertThat(orgasmServiceModels.size(), is(0));
 
+    }
+
+    @Test
+    public void findRandomOrgasm_shouldReturnRandomOrgasmWhichIsNotLikedOrDislikedAndNotPending(){
+
+      User user=new User();
+      Orgasm orgasm=new Orgasm();
+      orgasm.setPending(false);
+      orgasm.setTitle("Random");
+      List<Orgasm> orgasms = new ArrayList<>();
+      orgasms.add(orgasm);
+      when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+      when(orgasmRepository.findRandom(user.getUsername())).thenReturn(orgasms);
+        OrgasmServiceModel returnedOrgasm = orgasmService.findRandomOrgasm(user.getUsername());
+        assertThat("Random",is(returnedOrgasm.getTitle()));
     }
 
 

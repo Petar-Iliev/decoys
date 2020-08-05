@@ -105,7 +105,7 @@ public class AdminControllerTest {
 
 
         mockMvc.perform(get(String.format("/admin/find/orgasm/%s","INVALID")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
 
     }
 
@@ -217,7 +217,7 @@ public class AdminControllerTest {
     public void deleteOrgasm_shouldThrowFakeOrgasmException_whenEntityDoesntExist() throws Exception {
 
         mockMvc.perform(delete("/admin/delete/orgasm?name=validTitle"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -250,7 +250,7 @@ public class AdminControllerTest {
 
 
         mockMvc.perform(put("/admin/modi/pending?title=validTitle"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(mvcResult -> mvcResult.getResolvedException().getMessage().equals("Orgasm doesn't exist"));
 
     }
