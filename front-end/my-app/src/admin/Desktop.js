@@ -11,10 +11,9 @@ function Desktop(props){
     const [input,setInput]=useState("");
     const [objIn,setObjIn]=useState(true);
     const [findType,setType] = useState("user");
-
-
-   const [userProps,setUserProps] = useState({username:"",roles:[],orgasms:[]});
-   const [orgasmProps,setOrgasmProps] = useState({});
+    const [userProps,setUserProps] = useState({username:"",roles:[],orgasms:[]});
+    const [orgasmProps,setOrgasmProps] = useState({});
+    const [allPending,setAllPending] = useState([]);
 
  
     function handleInput(e){
@@ -43,7 +42,7 @@ function Desktop(props){
        if(resp.msg){
      
         if(type==="orgasm"){
-        
+          setAllPending(await props.methods.allPending());
           const arrs=userProps.orgasms.filter(e=>e.title!==name);
        
            setUserProps({...userProps,orgasms:arrs});
@@ -56,13 +55,16 @@ function Desktop(props){
     async function deleteOrg(title){
       const resp= await props.methods.delete("orgasm",title);
       if(resp.msg){
+        setAllPending(await props.methods.allPending());
         setOrgasmProps({})
+
       }
     }
 
     async function togglePending(title){
       const res = await props.methods.setPending(title);
       if(res.id){
+        setAllPending(await props.methods.allPending());
         if(orgasmProps.title===res.title){
           setOrgasmProps({...orgasmProps,pending:res.pending})
         }
@@ -88,13 +90,17 @@ function Desktop(props){
       setType(findType==="user" ? "orgasm " : "user");
     }
   
+    async function findAllPending(){
+      setAllPending(await props.methods.allPending());
+    }
+
    function changeOption(e){
     const val=e.target.innerHTML;
     if(val==="FIND"){
       setObjIn(true);
-    }else if(val==="CREATE"){
+    }else if(val==="PENDING"){
       setObjIn(false);
-     
+      findAllPending();
     }
    }
 
@@ -103,7 +109,7 @@ function Desktop(props){
            <div className="main-admin">
             <div className="admin-search">
               <div className="optins-tye" onClick={changeOption}>
-               <span className="option-nav-ad">FIND</span><span className="option-nav-ad">CREATE</span>
+               <span className="option-nav-ad">FIND</span><span className="option-nav-ad">PENDING</span>
               </div>
               <>
               <div className={`find-${findType}`} onClick={toggleSearchType}>O</div>
@@ -122,7 +128,8 @@ function Desktop(props){
             roles={userProps.roles} 
             orgasms={userProps.orgasms}/> 
             : <Orgasm delete={deleteOrg} setPending={togglePending} pending={orgasmProps.pending} title={orgasmProps.title} videoUrl={orgasmProps.videoUrl}/> :
-            <Create submit={props.methods.submit} handleTitle={props.methods.setOrgasmTitle} handleFile={props.methods.setOrgasmFile}/>}
+          
+            allPending.map(e=> <Orgasm key={e.id} user={e.user} delete={deleteOrg} setPending={togglePending} pending={e.pending} title={e.title} videoUrl={e.videoUrl} />)}
             </div>        
            </div>
         </div>
@@ -144,105 +151,5 @@ export default Desktop;
 
 
 
-
-
-
-
-
-
-// import React, { useState } from 'react';
-
-
-// import UserInfo from './UserInfo';
-// import Create from './Create'
-
-// import './admin.css'
-
-
-
-// function Desktop(props){
-
-    
-   
-//     const [input,setInput]=useState("");
-//     const [usrIn,setUsrIn]=useState(true);
-//     const [findType,setType] = useState("user");
-//     const [objRet,setObjRet] = useState(null);
-
-
-    
-//     function handleInput(e){
-
-    
-//       setInput(e.target.value);
-//     }
-
-  
-//   function changeOption(e){
-//     const val=e.target.innerHTML;
-//     if(val==="FIND"){
-//       setUsrIn(true);
-//     }else if(val==="CREATE"){
-//       setUsrIn(false);
-//     }
-//   }
-
-
-//     return(
-//         <div className="desktop-master">
-     
-    
-         
-//            <div className="main-admin">
-//             <div className="admin-search">
-//               <div className="optins-tye" onClick={changeOption}>
-//                <span className="option-nav-ad">FIND</span><span className="option-nav-ad">CREATE</span>
-//               </div>
-//               {usrIn &&
-//               <>
-//               <div className={`find-${findType}`} onClick={()=>{
-//                 setType(findType==="user" ? "orgasm " : "user")
-//               }}>O</div>
-//               <input type="text" placeholder="Search..." className="admin-search" value={input} onChange={handleInput} onKeyDown={(e)=>{
-                
-//                 if(e.keyCode===13){
-//                   if(findType==="user"){
-//                     props.methods.find(input);
-//                   }else{
-//                    setObjRet(props.methods.findOrgasm(input));
-//                   }
-       
-//                   setInput("");
-//                 }
-//               }}/> </>
-//             }
-//             </div>
-            
-//             <div className="info-admin">
-//             {usrIn ? 
-              
-           
-//               <UserInfo 
-//               username={props.username} 
-//               orgasms={props.orgasms}
-//                videoUrl={props.videoUrl} 
-//                pending={props.pending}
-//                roles={props.roles}
-//                methods={
-//                  {delete:props.methods.delete
-//                   ,setPending:props.methods.setPending
-//                 , setRole:props.methods.setRole}
-//                  }/> 
-//                  : <Create submit={props.methods.submit} handleTitle={props.methods.setOrgasmTitle} handleFile={props.methods.setOrgasmFile}/>}
-//             </div> 
-            
-//            </div>
-    
-//         </div>
-  
-//     )
-// }
-
-// export default Desktop;
 
 

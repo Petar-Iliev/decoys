@@ -144,8 +144,17 @@ public class OrgasmServiceImpl implements OrgasmService {
     }
 
     @Override
+    public List<OrgasmServiceModel> findAllPendingOrgasms() {
+        List<OrgasmServiceModel>pendingOrgasms=this.orgasmRepository.findAllByPendingIsTrue()
+                .stream().map(this::convertOrgasmToOrgasmServiceModel).collect(Collectors.toList());
+
+        return pendingOrgasms;
+    }
+
+    @Override
     public List<OrgasmServiceModel> findAllUsersOrgasms(String username) {
         List<Orgasm> orgList = this.orgasmRepository.findAllByUserUsername(username);
+
 
         return orgList.stream()
                 .map(this::convertOrgasmToOrgasmServiceModel)

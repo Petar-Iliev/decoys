@@ -27,6 +27,12 @@ public class User extends BaseEntity implements UserDetails {
     @Length(min = 6)
     private String password;
 
+    @Column(name = "bitcoin_address")
+    private String bitcoinAddress;
+
+    @Column(name = "patreon_link")
+    private String patreonLink;
+
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id" ,referencedColumnName = "id")

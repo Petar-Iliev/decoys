@@ -113,6 +113,16 @@ public class UserServiceImpl implements UserService {
         return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceModel.class);
     }
 
+    @Override
+    public UserServiceModel updateDonateProps(UserServiceModel userServiceModel) {
+       User user= this.userRepository.findByUsername(userServiceModel.getUsername()).orElseThrow(()->new UsernameNotFoundException(USER_NOT_FOUND));
+       user.setBitcoinAddress(userServiceModel.getBitcoinAddress());
+       user.setPatreonLink(userServiceModel.getPatreonLink());
+       this.userRepository.saveAndFlush(user);
+
+       return this.modelMapper.map(user,UserServiceModel.class);
+    }
+
 
     private void setRoleRegister(User user) {
 

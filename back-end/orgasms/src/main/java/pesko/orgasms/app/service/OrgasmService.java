@@ -24,6 +24,7 @@ public interface OrgasmService {
     OrgasmServiceModel dislikeOrgasm(String orgasmTitle,String username);
     int removeLikeDislikeByUsername(String username);
 
+    List<OrgasmServiceModel> findAllPendingOrgasms();
     List<OrgasmServiceModel>findAllUsersOrgasms(String username);
     List<OrgasmServiceModel>findAllUsersLikedOrgasms(String username);
     List<OrgasmServiceModel>findALlUsersDislikedOrgasms(String username);

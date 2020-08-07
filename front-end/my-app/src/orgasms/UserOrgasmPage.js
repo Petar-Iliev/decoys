@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react'
+import QrCode from 'qrcode.react';
 import Cookies from 'js-cookie'
 import './userorgasms.css';
 import Orgasm from './Orgasm'
 import CreateOrgasm from './CreateOrgasm'
+import DonateProps from './DonateProps';
 import {ReactComponent as Thumb} from './orgmp/like.svg';
 import {ReactComponent as ThumbDown} from './orgmp/dislike.svg';
 import {ReactComponent as Person} from './orgmp/man.svg'
+import {ReactComponent as CloseBtn} from './orgmp/close-button.svg'
+import {ReactComponent as Bitcoin} from './orgmp/bitcoin.svg';
+import {ReactComponent as Patreon} from './orgmp/patreon.svg';
+import { CSSTransition } from 'react-transition-group'
+
+
 
 import {useSelector,useDispatch} from 'react-redux'
 import {log} from '../actions/index.js';
+
 
 function UserOrgasms(props){
 
@@ -16,6 +25,9 @@ function UserOrgasms(props){
     const[disliked,setDisliked]=useState([]);
     const[own,setOwn]=useState([]);
     const [create,setCreate]=useState(false);
+    const [donateProps,setDonateProps] = useState(false);
+    const [donate,setDonate] = useState(false);
+    const [donateTo,setDonateTo] = useState({});
 
     const logged=useSelector(state=>state.log);
     const dispatcher=useDispatch();
@@ -42,7 +54,7 @@ function UserOrgasms(props){
            }
        })
         .then(resp=>{
-            
+     
             if(resp.status > 400){
                 dispatcher(log());
                 Cookies.remove("token");
@@ -53,9 +65,22 @@ function UserOrgasms(props){
             return resp;
             }
         })
-        .then(resp=>resp.json())
-        .catch(err=>console.error(err))
+       .then(resp=>resp.json())
+       .then(resp=>{
+         
+           console.log(resp);
+           return resp;
+       }) 
+       .catch(err=>console.error(err))
     }
+
+    function openDonationPop(userInfo){
+        setDonateTo(userInfo)  
+        setDonate(true);
+          
+    }
+
+  
 
     return(
         <>
@@ -65,22 +90,43 @@ function UserOrgasms(props){
         <div className="orgasms-holder">
       <div className="user-liked-orgasms org-list">
           <Thumb title="pending"/> 
-           {liked.map(e=><Orgasm key={e.id} title={e.title} videoUrl={e.videoUrl}/>)}</div>
+           {liked && liked.map(e=><Orgasm donateInfo={openDonationPop} key={e.id} userDon={e.user} title={e.title} videoUrl={e.videoUrl}/>)}</div>
       <div className="user-orgasms org-list">
 
-          <Person className="metal-man"/>
+          <Person className="metal-man" onClick={()=>setDonateProps(!donateProps)}/>
 
        <div className="create-org-user" onClick={()=>setCreate(true)}>Create Orgasm</div> 
-      {own.map(e=><Orgasm key={e.id} title={e.title} pending={e.pending} videoUrl={e.videoUrl}/>)}
+      {own && own.map(e=><Orgasm key={e.id} title={e.title} pending={e.pending} videoUrl={e.videoUrl}/>)}
       </div>
 
       <div className="user-disliked-orgasms org-list">
           <ThumbDown title="approved"/> 
-          {disliked.map(e=><Orgasm key={e.id} title={e.title} videoUrl={e.videoUrl}/>)}</div>
+          {disliked && disliked.map(e=><Orgasm donateInfo={openDonationPop} key={e.id} userDon={e.user} title={e.title} videoUrl={e.videoUrl}/>)}</div>
         </div>
+ 
 }
+       <CSSTransition in={donateProps} timeout={400} unmountOnExit={true} classNames="don-inf-ani">
+           <DonateProps close={()=>setDonateProps(false)} />
+       </CSSTransition>
+
+       {donate && <DonatePopUp info={donateTo} close={()=>setDonate(false)}/>}
         </>
     )
 }
+
+
+function DonatePopUp(props){
+
+    return(
+        <div className="donate-to">
+            <div>SUPPORT THE ORGASAMIST</div>
+        <span className="don-set"><Bitcoin /> &#x21E8; &#x21E8; &#x21E8; <QrCode value={props.info.bitcoinAddress} size={80}/></span>
+        <span className="don-set"><small>PATREON</small>&#x21E8; &#x21E8; &#x21E8; <a href={props.info.patreonLink} target="__blank"><Patreon/></a></span>
+        <CloseBtn className={"close-don"} onClick={props.close}/>
+        </div>
+    )
+}
+
+
 
 export default UserOrgasms;

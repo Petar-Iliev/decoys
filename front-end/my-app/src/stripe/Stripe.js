@@ -1,9 +1,6 @@
 import React from 'react';
 import {loadStripe} from '@stripe/stripe-js';
-
-
-
-import test from './svgs/test.png'
+import schema from './svgs/test.png'
 import {ReactComponent as Arrow} from './svgs/charity.svg'
 
 
@@ -48,7 +45,7 @@ class Stripe extends React.Component{
 
      handleClick = async(event)=>{
 
-        console.log("here")
+      
         const stripe=await stripePromise;
 
         const {error}= await stripe.redirectToCheckout({
@@ -57,7 +54,7 @@ class Stripe extends React.Component{
             
             ],
             successUrl:"http://localhost:3000/",
-            cancelUrl:"http://localhost:3000/login"
+            cancelUrl:"http://localhost:3000/donate"
         });
     }
 
@@ -79,10 +76,6 @@ class Stripe extends React.Component{
         if(nextIndexPrice===this.state.prices.length){
             nextIndexPrice=0;
         }
-       
-   
-  
-      
     this.setState({
         index:nextIndexPrice
  },function(){
@@ -109,7 +102,7 @@ class Stripe extends React.Component{
       </div>
     </div>
          <div className="schema">
-                <img src={test} className="bigger"/>
+                <img src={schema} className="bigger"/>
                </div>
           </div>     
           </>

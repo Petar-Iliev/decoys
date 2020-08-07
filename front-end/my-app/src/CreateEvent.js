@@ -1,6 +1,23 @@
 import React, { useState } from 'react'
 
 
+const validEventTypes=["DRINKING",
+    "MOVIE",
+    "THEATRE",
+    "READING",
+    "SPORTS",
+    "PSS_ITS_A_SECRET",
+    "STUDIO_DAY",
+    "SCREAMING_RANDOM_NON_SENSE",
+    "ACT_RUDE_TO_PEOPLE_AND_PIGEONS",
+    "ACT_POLITE_TO_RUDE_PIGEONS",
+    "EATING",
+    "COFFEE",
+    "BENCH_PARTY",
+    "DISCO",
+    "LETTER_BOX",
+    "CLEANING"]
+
 function CreateEvent(props){
 
     const [createEvent,setCreateEvent] = useState(false);
@@ -15,6 +32,10 @@ function CreateEvent(props){
 
     function submit(){
 
+        if(!validEventTypes.includes(type)){
+            alert("Invalid Event Type valid types -> "+validEventTypes);
+           return;
+        }
         
 
         fetch("http://localhost:8050/event/create",{
@@ -24,7 +45,9 @@ function CreateEvent(props){
                 "Content-Type":"application/json"
             },
             body:JSON.stringify({info,type,location,date})
-        })
+        }).then(resp=>{
+            resp.status === 201 ? window.location.reload(true) : alert("NO Location OR DATE IS IN THE PAST");
+        }).catch(err=>console.error(err));
     }
 
     return(

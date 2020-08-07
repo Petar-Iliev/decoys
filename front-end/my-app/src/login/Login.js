@@ -37,9 +37,6 @@ function Login(props){
             data:JSON.stringify(data)
         })
       .then(resp=>{
-
-            // localStorage.setItem("logged",true);
-            // localStorage.setItem("user",username)
             
             Cookies.set("token",resp.headers.authorization,{expires:1});
                   dispatcher(log());

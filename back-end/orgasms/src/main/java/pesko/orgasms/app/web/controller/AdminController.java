@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pesko.orgasms.app.domain.models.binding.UserSetRoleBindingModel;
 import pesko.orgasms.app.domain.models.error.ErrorInfo;
 import pesko.orgasms.app.domain.models.info.InfoModel;
+import pesko.orgasms.app.domain.models.response.PendingOrgasmResponseModel;
 import pesko.orgasms.app.domain.models.service.OrgasmServiceModel;
 import pesko.orgasms.app.domain.models.service.RoleServiceModel;
 import pesko.orgasms.app.domain.models.service.UserServiceModel;
@@ -24,6 +25,7 @@ import pesko.orgasms.app.service.OrgasmService;
 import pesko.orgasms.app.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -77,6 +79,15 @@ public class AdminController {
         }
       OrgasmResponseModel orgasm= this.modelMapper.map(orgasmServiceModel, OrgasmResponseModel.class);
         return ResponseEntity.ok().body(orgasm);
+    }
+
+    @GetMapping("/find/all/pending")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PendingOrgasmResponseModel>>findAllPendingOrgasms(){
+       List<PendingOrgasmResponseModel>pendingOrgasms= this.orgasmService.findAllPendingOrgasms()
+               .stream().map(e->this.modelMapper.map(e,PendingOrgasmResponseModel.class)).collect(Collectors.toList());
+
+       return ResponseEntity.ok().body(pendingOrgasms);
     }
 
     @PutMapping("/set-role")

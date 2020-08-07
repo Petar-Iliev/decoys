@@ -11,6 +11,8 @@ import {CSSTransition} from 'react-transition-group';
 import {ReactComponent as TerminalSVG} from '../main/svgs/command-line.svg';
 import {ReactComponent as DesktopSVG} from '../main/svgs/desktop.svg';
 
+const serverUrl="http://localhost:8050";
+
 class Admin extends React.Component{
     constructor(props){
         super(props)
@@ -50,6 +52,7 @@ class Admin extends React.Component{
         this.setPending=this.setPending.bind(this);
         this.addOrgasm=this.addOrgasm.bind(this);
         this.makeRequest=this.makeRequest.bind(this);
+        this.findAllPendingOrgasms=this.findAllPendingOrgasms.bind(this);
     }
 
     componentDidMount(){
@@ -139,7 +142,7 @@ class Admin extends React.Component{
         const data=new FormData();
          data.append("file",files[0]);
 
-      return  await fetch(`http://localhost:8050/orgasm/create/${this.state.title}`,{
+      return  await fetch(`${serverUrl}/orgasm/create/${this.state.title}`,{
             method:"POST",
             headers:{
                 "Authorization":Cookies.get("token")
@@ -172,9 +175,14 @@ class Admin extends React.Component{
         this.setState({desktop:true,option:false})
     }
 
+    async findAllPendingOrgasms(){
+        const url =`${serverUrl}/admin/find/all/pending`
+        return await this.makeRequest(url);
+    }
+
    async findUser(name){
        
-        const url =`http://localhost:8050/admin/find/user/${name}`
+        const url =`${serverUrl}/admin/find/user/${name}`
        return await this.makeRequest(url);
        
     }
@@ -190,7 +198,7 @@ class Admin extends React.Component{
         if(!validRoles.includes(role)){
             return "INVALID ROLE";
         }
-        const url ="http://localhost:8050/admin/set-role";
+        const url =`${serverUrl}/admin/set-role`;
         const method="PUT";
         const contentType="application/json";
         const body=JSON.stringify({username,role});
@@ -200,7 +208,7 @@ class Admin extends React.Component{
     }
 
     async deleteType(type,name){
-       const url =`http://localhost:8050/admin/delete/${type}?name=${name}`;
+       const url =`${serverUrl}/admin/delete/${type}?name=${name}`;
       return await this.makeRequest(url,"DELETE");
 
     }
@@ -231,7 +239,7 @@ class Admin extends React.Component{
 
     async setPending(title){
 
-        const url =`http://localhost:8050/admin/modi/pending?title=${title}`;
+        const url =`${serverUrl}/admin/modi/pending?title=${title}`;
         const method="PUT";
         return await this.makeRequest(url,method);
    
@@ -250,7 +258,8 @@ class Admin extends React.Component{
          setOrgasmTitle:this.handleOrgasmTitle,
          setOrgasmFile:this.handleOrgasmFile,
          setPending:this.setPending,
-         handleVideo:this.handleVideo
+         handleVideo:this.handleVideo,
+         allPending:this.findAllPendingOrgasms
         }
         return(
            this.state.valid && 

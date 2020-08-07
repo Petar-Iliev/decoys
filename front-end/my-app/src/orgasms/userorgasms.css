@@ -22,6 +22,7 @@
     width: 70px;
    height: 70px;
    margin-bottom: 20px;
+   cursor: pointer;
 }
 .org-info-line{
     display: grid;
@@ -147,8 +148,142 @@
     cursor: pointer;
 }
 
+
+.don-inf-per svg{
+    cursor: pointer;
+}
+
+ .don-inf-ani-enter{
+    position: absolute;
+   
+    top: 50%;
+    transform: scale(0);
+  }
+  .don-inf-ani-enter-done{
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    transform: scale(1);
+    transition: all 300ms ease;
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #F24236;
+    border-radius: 5px;
+    padding: 30px;
+  }
+   .don-inf-ani-exit{
+       transform: scale(1.1);
+   }
+  .don-inf-ani-exit-active{
+
+    transform: scale(0);   
+    transition: all 400ms ease; 
+  }
+
+ /* .don-inf-ani-exit-done{
+    transform: scale(0);  
+    transition: all 400ms ease;
+          
+   } */
+
+.don-set{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.don-set-done{
+    margin-top: 20px;
+   text-align: center;
+   cursor: pointer;
+   background-color: #F18F01;
+   border: 2px solid;
+   border-radius: 5px;
+   transition: all 200ms ease;
+}
+.don-set-done:hover{
+    transform: scale(0.9);
+}
+.btc-add-prop a{
+    margin-top: auto;
+}
+
+.btc-add-prop{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #2E86AB;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.btc-add-prop input{
+    margin: 20px;
+ width: 90%;
+}
+
+.set-btc-btn{
+    margin-top: auto;
+    background-color: #564138;
+    padding: 5px;
+    border: 2px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+.set-btc-btn:hover{
+    transform: scale(0.9);
+}
+
+.donate-to{
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    background: #5BBA6F;
+    border: 3px solid;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 5px 28px 0px rgba(91,186,111,0.53);
+    -moz-box-shadow: 0px 5px 28px 0px rgba(91,186,111,0.53);
+    box-shadow: 0px 5px 28px 0px rgba(91,186,111,0.53);
+}
+.donate-to span{
+    width: 90%;
+    padding: 10px;
+}
+
+.close-don{
+    align-self: center;
+    margin-left: 45%;
+    cursor: pointer;
+}
+
+.cash-box{
+    transition: 200ms all ease;
+    cursor: pointer;
+}
+.cash-box:hover{
+    transform: scale(0.9);
+}
+
+.user-org-ad{
+    background: blueviolet;
+    border: 5px solid;
+    margin-right: 20px;
+}
+
 @media screen and (max-width: 600px){
 
+    .inf-desk-hold{
+       flex-direction: column;
+    }
+    .inf-desk-hold span{
+        margin-top: 20px;
+    }
     .orgasms-holder{
         display: grid;
         grid-template-areas: "user" "liked" "disliked";
@@ -174,3 +309,5 @@
         margin-bottom: 50px;
     }
 }
+
+

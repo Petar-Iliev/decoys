@@ -15,6 +15,9 @@ public class UserInfoResponseModel {
     private List<String> authorities;
     private List<OrgasmResponseModel> orgasms;
 
+    private String bitcoinAddress;
+    private String patreonLink;
+
     public UserInfoResponseModel(){
 
         this.setAuthorities(new ArrayList<>());
