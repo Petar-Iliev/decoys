@@ -123,6 +123,13 @@ public class UserServiceImpl implements UserService {
        return this.modelMapper.map(user,UserServiceModel.class);
     }
 
+    @Override
+    public List<UserServiceModel>  finAllUsers() {
+        return this.userRepository.findAll().stream()
+                .map(e->this.modelMapper.map(e,UserServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
 
     private void setRoleRegister(User user) {
 

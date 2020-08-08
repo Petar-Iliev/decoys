@@ -62,7 +62,7 @@ public class AdminController {
             throw new UsernameNotFoundException("User doesn't exist");
         }
         UserInfoResponseModel responseModel = this.modelMapper.map(user, UserInfoResponseModel.class);
-        responseModel.setAuthorities(user.getRoles().stream().map(RoleServiceModel::getAuthority).collect(Collectors.toList()));
+//        responseModel.setRoles(user.getRoles().stream().map(RoleServiceModel::getAuthority).collect(Collectors.toList()));
 
 
         return ResponseEntity.ok().body(responseModel);
@@ -79,6 +79,16 @@ public class AdminController {
         }
       OrgasmResponseModel orgasm= this.modelMapper.map(orgasmServiceModel, OrgasmResponseModel.class);
         return ResponseEntity.ok().body(orgasm);
+    }
+
+    @GetMapping("/find/all/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserInfoResponseModel>> findAllUsers(){
+
+       List<UserInfoResponseModel>users= this.userService.finAllUsers().stream().map(e->this.modelMapper.map(e,UserInfoResponseModel.class))
+                .collect(Collectors.toList());
+
+       return ResponseEntity.ok().body(users);
     }
 
     @GetMapping("/find/all/pending")
@@ -102,9 +112,9 @@ public class AdminController {
 
         UserInfoResponseModel userInfoResponseModel=this.modelMapper.map(userServiceModel,UserInfoResponseModel.class);
 
-        userServiceModel.getRoles().forEach(e->{
-            userInfoResponseModel.getAuthorities().add(e.getAuthority());
-        });
+//        userServiceModel.getRoles().forEach(e->{
+//            userInfoResponseModel.getRoles().add(e.getAuthority());
+//        });
 
         return ResponseEntity.ok().body(userInfoResponseModel);
     }

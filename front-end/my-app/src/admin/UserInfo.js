@@ -12,6 +12,8 @@ function UserInfo(props){
            return <></>
        }else{
 
+        const usersRoles = props.roles.map(e=>e.authority);
+  
 
     return(
  
@@ -23,7 +25,7 @@ function UserInfo(props){
     
           <div className="user-roles">
             Roles:
-      {validRoles.map(e=><span key={e} onClick={()=>props.methods.setRole(e)} className={`role-color ${props.roles.includes(e) ? "green":"white"}`} >{e}</span>)}
+      {validRoles.map(e=><span key={e} onClick={()=>props.methods.setRole(props.username,e)} className={`role-color ${usersRoles.includes(e) ? "green":"white"}`} >{e}</span>)}
           </div>
        
           <div className="user-orgasms">

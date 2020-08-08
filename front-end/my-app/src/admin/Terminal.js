@@ -17,6 +17,7 @@ function  Terminal(props) {
        
         return `clear - cleans the terminal\n\n Duser [username] - delete user by username\n\n Dorgasm [title] - delete orgasm by title\n\n setRole [role {ADMIN,GUEST,USER}] [username]\n\n
  setPending [orgasmTitle] - toggle pending state of an Orgasm\n\n findO [name] - find Orgasm by name\n\n findU [username] - find User by username\n
+ allPending - finds all orgasms in pending stage\n
         \n setOrgasmTitle [title] \n\n setOrgasmFile (Choose File Audio/Video)\n\n submit - creates Orgasm AFTER ALL PROPS ARE FILLED (Title & File)\n\n `
     }
     
@@ -40,10 +41,12 @@ function  Terminal(props) {
             case "findU":
              name=trimmedCommand.slice(6);
           data = await props.methods.find(name);
+          console.log(data);
              if(!data.id){
                 retMsg=`${name} doesn't exists`
              }else{    
-                 retMsg=`ID: ${data.id}\nUsername: ${data.username}\nRoles: ${data.authorities.join(", ")}\nOrgasms:\n`
+                 const roles = data.roles.map(e=>e.authority);
+                 retMsg=`ID: ${data.id}\nUsername: ${data.username}\nRoles: ${roles.join(", ")}\nOrgasms:\n`
                  data.orgasms.forEach(e=>{ retMsg+= `ID: ${e.id}\n Title: ${e.title}\n Pending: ${e.pending}\n${e.videoUrl}\n`})
              }  
             break;
@@ -94,6 +97,26 @@ function  Terminal(props) {
 
                case "setOrgasmFile":
                    retMsg=await props.methods.setOrgasmFile();
+               break;
+
+               case "allPending":
+                   
+                data = await props.methods.allPending();
+                
+               retMsg = data.map(e=> `Title: ${e.title}\nUrl: ${e.videoUrl}\nUser: ${e.user.username}\n\n`)
+               
+               break;
+
+               case "findAllU":
+
+               data = await props.methods.allUsers();
+
+               console.log("HELLO "+data);
+               retMsg = data.map(e=> `Username : ${e.username}\n
+               Roles: ${e.roles.map(r=>r.authority)}
+               \n${e.orgasms.map(o=> `Title: ${o.title}\nUrl: ${o.videoUrl}\nPending: ${o.pending}\n`)}\n\n`)
+            
+                
                break;
 
             case "submit":
